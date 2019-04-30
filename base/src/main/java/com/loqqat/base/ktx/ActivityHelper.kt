@@ -13,6 +13,7 @@ object ActivityHelper{
     fun AppCompatActivity.enterFullScreen()
     {
         // Enables regular immersive mode.
+
         // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
         // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 //        var flags=(
