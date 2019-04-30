@@ -2,6 +2,7 @@ package com.loqqat.base.viewmodel
 
 import android.os.Bundle
 import androidx.annotation.StringRes
+import androidx.navigation.NavDirections
 import com.loqqat.base.R
 
 interface ViewModelCallBacks {
@@ -29,6 +30,7 @@ interface ViewModelCallBacks {
     )
 
     fun onNavigate(navigationActionId: Int,bundle: Bundle?=null)
+    fun onNavigateAction(navigationActionId: NavDirections)
     fun showLoading(message: String)
     fun showLoading(@StringRes resId: Int = R.string.loading)
     fun hideLoading()

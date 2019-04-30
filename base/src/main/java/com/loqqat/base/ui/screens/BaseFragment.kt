@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.loqqat.base.viewmodel.BaseViewModel
 import com.loqqat.base.viewmodel.ViewModelCallBacks
@@ -143,5 +144,9 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     override fun onNavigateUp() {
         findNavController().navigateUp()
+    }
+
+    override fun onNavigateAction(navigationActionId: NavDirections) {
+        findNavController().navigate(navigationActionId)
     }
 }
