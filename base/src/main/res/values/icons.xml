@@ -22,6 +22,7 @@
     <string name="icon_tick_fill_green" translatable="false">&#xe917;</string>
     <string name="icon_edit_outline" translatable="false">&#xe913;</string>
     <string name="icon_profile_outline" translatable="false">&#xe916;</string>
+    <string name="icon_calendar_outline" translatable="false">&#xe900;</string>
     <string name="icon_down_arrow" translatable="false">&#xe91b;</string>
     <string name="icon_tick_fill_box" translatable="false">&#xe91d;</string>
     <string name="icon_sos_fill" translatable="false">&#xe90f;</string>
