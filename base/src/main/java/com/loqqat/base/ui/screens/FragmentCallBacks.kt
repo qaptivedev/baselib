@@ -42,7 +42,8 @@ interface FragmentCallBacks {
         positiveAction: (() -> Unit)? = null,
         negativeButton: String? = null,
         negativeAction: (() -> Unit)? = null,
-        triggerActionOnDismiss: Boolean=false
+        triggerActionOnDismiss: Boolean=false,
+        canDismiss:Boolean=true
     )
 
     fun showInfo(
@@ -52,7 +53,8 @@ interface FragmentCallBacks {
         positiveAction: (() -> Unit)? = null,
         @StringRes negativeButton: Int? = null,
         negativeAction: (() -> Unit)? = null,
-        triggerActionOnDismiss: Boolean=false
+        triggerActionOnDismiss: Boolean=false,
+        canDismiss:Boolean=true
     )
 
     fun performTask(task:Intent,any: Any?)

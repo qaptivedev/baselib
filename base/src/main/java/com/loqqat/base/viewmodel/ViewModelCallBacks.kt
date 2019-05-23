@@ -17,7 +17,9 @@ interface ViewModelCallBacks {
         positiveAction: (() -> Unit)? = null,
         negativeButton: String? = null,
         negativeAction: (() -> Unit)? = null,
-        triggerActionOnDismiss: Boolean=false
+        triggerActionOnDismiss: Boolean=false,
+        canDismiss:Boolean=true
+
     )
     fun showInfo(
         @StringRes title: Int? = null,
@@ -26,7 +28,8 @@ interface ViewModelCallBacks {
         positiveAction: (() -> Unit)? = null,
         @StringRes negativeButton: Int? = null,
         negativeAction: (() -> Unit)? = null,
-        triggerActionOnDismiss: Boolean=false
+        triggerActionOnDismiss: Boolean=false,
+        canDismiss:Boolean=true
     )
 
     fun onNavigate(navigationActionId: Int,bundle: Bundle?=null)
