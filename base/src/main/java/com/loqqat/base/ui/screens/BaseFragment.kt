@@ -99,16 +99,18 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         positiveAction: (() -> Unit)?,
         negativeButton: String?,
         negativeAction: (() -> Unit)?,
-        triggerActionOnDismiss: Boolean
+        triggerActionOnDismiss: Boolean,
+        canDismiss:Boolean
     ) {
-        callBack?.showInfo(title, message, positiveButton, positiveAction, negativeButton, negativeAction,triggerActionOnDismiss)
+        callBack?.showInfo(title, message, positiveButton, positiveAction, negativeButton, negativeAction,triggerActionOnDismiss,canDismiss)
     }
 
     override fun showInfo(
         @StringRes title: Int?, @StringRes message: Int, @StringRes positiveButton: Int?, positiveAction: (() -> Unit)?,
         @StringRes negativeButton: Int?,
         negativeAction: (() -> Unit)?,
-        triggerActionOnDismiss: Boolean
+        triggerActionOnDismiss: Boolean,
+        canDismiss:Boolean
     ) {
         callBack?.showInfo(
             title,
@@ -117,7 +119,8 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
             positiveAction,
             negativeButton,
             negativeAction,
-            triggerActionOnDismiss
+            triggerActionOnDismiss,
+            canDismiss
         )
     }
 
