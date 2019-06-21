@@ -13,10 +13,10 @@ import com.loqqat.base.ktx.ActivityHelper.enterFullScreen
 import com.loqqat.base.ktx.ActivityHelper.exitFullScreen
 
 abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
-    private var isInFulScreen = false
-    private var isDrawerEnabled = true
-    private var isFloatingButtonEnabled = true
-    private var floatingAction: (() -> Unit)? = null
+     var isInFulScreen = false
+     var isDrawerEnabled = true
+     var isFloatingButtonEnabled = true
+     var floatingAction: (() -> Unit)? = null
 
     override fun toggleFullScreen(enableFullScreen: Boolean) {
         if (enableFullScreen) {
