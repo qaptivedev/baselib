@@ -53,12 +53,12 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
     override fun floatingActionButton(enableFloatingActionButton: Boolean) {
         if (enableFloatingActionButton) {
             if (!isFloatingButtonEnabled) {
-                (getFloatingActionButton() as View).visibility = View.VISIBLE
+                (getFloatingActionButton() as View?)?.visibility = View.VISIBLE
                 isFloatingButtonEnabled = true
             }
         } else {
             if (isFloatingButtonEnabled) {
-                (getFloatingActionButton() as View).visibility = View.GONE
+                (getFloatingActionButton() as View?)?.visibility = View.GONE
                 isFloatingButtonEnabled = false
             }
         }
