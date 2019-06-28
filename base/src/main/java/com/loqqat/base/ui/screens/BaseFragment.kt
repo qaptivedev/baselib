@@ -1,6 +1,7 @@
 package com.loqqat.base.ui.screens
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -151,5 +152,11 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     override fun onNavigateAction(navigationActionId: NavDirections) {
         findNavController().navigate(navigationActionId)
+    }
+
+    override fun onNavigateToActivity(intent: Intent, finishCurrent: Boolean) {
+        activity?.startActivity(intent)
+        if (finishCurrent)
+            activity?.finish()
     }
 }
