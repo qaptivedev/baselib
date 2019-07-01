@@ -160,7 +160,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
             activity?.finish()
     }
 
-    override fun onNavigateToActivity(activityClass: Class<BaseActivity>, finishCurrent: Boolean) {
+    override fun onNavigateToActivity(activityClass: Class<*>, finishCurrent: Boolean) {
         val intent=Intent(activity,activityClass)
         activity?.startActivity(intent)
         if(finishCurrent)

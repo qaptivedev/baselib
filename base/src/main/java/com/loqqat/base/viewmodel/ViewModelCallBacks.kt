@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.navigation.NavDirections
 import com.loqqat.base.R
-import com.loqqat.base.ui.screens.BaseActivity
 
 interface ViewModelCallBacks {
     fun showInfo(message: String, actionString: String = "Ok", onclick: () -> Unit)
@@ -41,7 +40,7 @@ interface ViewModelCallBacks {
     fun hideLoading()
 
     fun onNavigateToActivity(intent: Intent,finishCurrent:Boolean=false)
-    fun onNavigateToActivity(activityClass:Class<BaseActivity>,finishCurrent:Boolean=false)
+    fun onNavigateToActivity(activityClass:Class<*>,finishCurrent:Boolean=false)
 
     fun onNavigateUp()
 }
