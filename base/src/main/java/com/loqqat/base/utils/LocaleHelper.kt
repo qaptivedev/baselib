@@ -9,8 +9,8 @@ import java.util.*
 
 class LocaleHelper(base: Context): ContextWrapper(base){
     companion object {
-        fun wrap(context: Context, language: String): ContextWrapper {
-            var context = context
+        fun wrap(valContext: Context, language: String): ContextWrapper {
+            var context = valContext
             val config = context.resources.configuration
             if (language != "") {
                 val locale = Locale(language)
