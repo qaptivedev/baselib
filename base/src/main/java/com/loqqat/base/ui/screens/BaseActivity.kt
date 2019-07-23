@@ -143,7 +143,7 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
     ) {
         var isClicked=false
         val dialogBuilder = AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
-        dialogBuilder.setTitle(title)
+        dialogBuilder.setTitle(title ?: getString(R.string.app_name))
         dialogBuilder.setMessage(message)
         positiveButton?.let {
             dialogBuilder.setCancelable(true)
