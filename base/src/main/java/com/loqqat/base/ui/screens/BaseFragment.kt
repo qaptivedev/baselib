@@ -70,11 +70,11 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     }
 
     override fun showInfo(message: Int) {
-
+        callBack?.showInfo(message)
     }
 
     override fun showInfo(message: String) {
-
+        callBack?.showInfo(message)
     }
 
     override fun showLoading(resId: Int) {
