@@ -6,11 +6,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.loqqat.base.R
 import com.loqqat.base.ktx.ActivityHelper.enterFullScreen
 import com.loqqat.base.ktx.ActivityHelper.exitFullScreen
+import com.loqqat.base.utils.DisableableAppBarLayoutBehavior
 
 abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
      var isInFulScreen = false
@@ -181,6 +183,26 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
         dialogBuilder.setCancelable(dialogDismiss)
         runOnUiThread { dialogBuilder.create().show() }
 
+    }
+
+    override fun setCanCollapseToolbar(boolean: Boolean) {
+        getAppBarLayoutBehavior()?.enabled = boolean
+    }
+
+    override fun collapseToolbar(animate: Boolean) {
+        getAppBar()?.setExpanded(false, animate)
+    }
+
+    override fun expandToolbar(animate: Boolean) {
+        getAppBar()?.setExpanded(true, animate)
+    }
+
+    fun getAppBarLayoutBehavior(): DisableableAppBarLayoutBehavior? {
+        return null
+    }
+
+    fun getAppBar(): AppBarLayout? {
+        return null
     }
 
     abstract fun getNavigationView(): NavigationView?

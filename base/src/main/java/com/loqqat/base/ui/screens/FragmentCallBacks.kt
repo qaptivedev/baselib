@@ -3,7 +3,6 @@ package com.loqqat.base.ui.screens
 import android.content.Intent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.google.android.material.snackbar.Snackbar
 import com.loqqat.base.R
 
 interface FragmentCallBacks {
@@ -61,4 +60,9 @@ interface FragmentCallBacks {
 
 //    fun startNfcScan(nfcCallBack: NFCCallBack)
 //    fun stopNfcScan()
+
+    fun setCanCollapseToolbar(boolean: Boolean)
+
+    fun collapseToolbar(animate: Boolean = true)
+    fun expandToolbar(animate: Boolean = true)
 }
