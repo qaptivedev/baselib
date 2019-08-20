@@ -1,7 +1,6 @@
 package com.loqqat.base.utils
 
 import android.content.Context
-import android.util.Log
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParser.END_TAG
 import org.xmlpull.v1.XmlPullParser.START_TAG
