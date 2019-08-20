@@ -197,11 +197,11 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
         getAppBar()?.setExpanded(true, animate)
     }
 
-    fun getAppBarLayoutBehavior(): DisableableAppBarLayoutBehavior? {
+    open fun getAppBarLayoutBehavior(): DisableableAppBarLayoutBehavior? {
         return null
     }
 
-    fun getAppBar(): AppBarLayout? {
+    open fun getAppBar(): AppBarLayout? {
         return null
     }
 
