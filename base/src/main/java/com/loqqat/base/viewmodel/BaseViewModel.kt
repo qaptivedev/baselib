@@ -1,7 +1,7 @@
 package com.loqqat.base.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.loqqat.base.utils.Log
 
 abstract class BaseViewModel:ViewModel() {
     var actionCallBacks:ViewModelCallBacks?=null
