@@ -133,7 +133,7 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
 
 
 
-    private fun showDialog(
+    open fun showDialog(
         title: String? = null,
         message: String,
         positiveButton: String? = null,
