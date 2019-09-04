@@ -1,5 +1,6 @@
 package com.loqqat.base.viewmodel
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.navigation.NavDirections
@@ -37,6 +38,9 @@ interface ViewModelCallBacks {
     fun showLoading(message: String)
     fun showLoading(@StringRes resId: Int = R.string.loading)
     fun hideLoading()
+
+    fun onNavigateToActivity(intent: Intent,finishCurrent:Boolean=false)
+    fun onNavigateToActivity(activityClass:Class<*>,finishCurrent:Boolean=false)
 
     fun onNavigateUp()
 }

@@ -1,6 +1,7 @@
 package com.loqqat.base.ui.screens
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -69,11 +70,11 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     }
 
     override fun showInfo(message: Int) {
-
+        callBack?.showInfo(message)
     }
 
     override fun showInfo(message: String) {
-
+        callBack?.showInfo(message)
     }
 
     override fun showLoading(resId: Int) {
@@ -151,5 +152,19 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     override fun onNavigateAction(navigationActionId: NavDirections) {
         findNavController().navigate(navigationActionId)
+    }
+
+    override fun onNavigateToActivity(intent: Intent, finishCurrent: Boolean) {
+        activity?.startActivity(intent)
+        if (finishCurrent)
+            activity?.finish()
+    }
+
+    override fun onNavigateToActivity(activityClass: Class<*>, finishCurrent: Boolean) {
+        val intent=Intent(activity,activityClass)
+        activity?.startActivity(intent)
+        if(finishCurrent)
+            activity?.finish()
+
     }
 }
