@@ -137,6 +137,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         if(activity!=null)
         {
             (activity as ToolbarProvider).setUpToolbar(getToolbar(),getCollapsingToolbarLayout())
+            activity?.title = ""
         }
     }
 
