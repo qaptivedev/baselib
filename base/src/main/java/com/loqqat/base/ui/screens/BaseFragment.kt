@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.loqqat.base.viewmodel.BaseViewModel
 import com.loqqat.base.viewmodel.ViewModelCallBacks
 
@@ -132,6 +134,10 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         vieModel.actionCallBacks = this
+        if(activity!=null)
+        {
+            (activity as ToolbarProvider).setUpToolbar(getToolbar(),getCollapsingToolbarLayout())
+        }
     }
 
     /**
@@ -167,4 +173,8 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
             activity?.finish()
 
     }
+
+    abstract fun getToolbar():Toolbar
+
+    abstract fun getCollapsingToolbarLayout(): CollapsingToolbarLayout?
 }

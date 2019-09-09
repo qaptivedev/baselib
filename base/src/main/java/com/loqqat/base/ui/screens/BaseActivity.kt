@@ -7,6 +7,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -191,9 +194,24 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks,ToolbarProvide
         toolbar: Toolbar,
         collapsingToolbarLayout: CollapsingToolbarLayout?
     ) {
-
+        setSupportActionBar(toolbar)
+        if (collapsingToolbarLayout != null)
+            NavigationUI.setupWithNavController(
+                collapsingToolbarLayout,
+                toolbar,
+                getNavController(),
+                getAppBarConfiguration()
+            )
+        else
+            NavigationUI.setupWithNavController(
+                toolbar,
+                getNavController(),
+                getAppBarConfiguration()
+            )
     }
 
+    abstract fun getAppBarConfiguration(): AppBarConfiguration
+    abstract fun getNavController(): NavController
     abstract fun getNavigationView(): NavigationView?
     abstract fun getDrawerLayout(): DrawerLayout?
     abstract fun getActionBarDrawerToggle(): ActionBarDrawerToggle?
