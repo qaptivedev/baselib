@@ -57,12 +57,4 @@ interface FragmentCallBacks {
     )
 
     fun performTask(task:Intent,any: Any?)
-
-//    fun startNfcScan(nfcCallBack: NFCCallBack)
-//    fun stopNfcScan()
-
-    fun setCanCollapseToolbar(boolean: Boolean)
-
-    fun collapseToolbar(animate: Boolean = true)
-    fun expandToolbar(animate: Boolean = true)
 }
