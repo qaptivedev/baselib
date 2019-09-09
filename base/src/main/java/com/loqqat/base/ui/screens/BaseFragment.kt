@@ -174,7 +174,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     }
 
-    abstract fun getToolbar():Toolbar
+    abstract fun getToolbar():Toolbar?
 
     abstract fun getCollapsingToolbarLayout(): CollapsingToolbarLayout?
 }

@@ -191,9 +191,11 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks,ToolbarProvide
     }
 
     override fun setUpToolbar(
-        toolbar: Toolbar,
+        toolbar: Toolbar?,
         collapsingToolbarLayout: CollapsingToolbarLayout?
     ) {
+        if(toolbar==null)
+            return
         setSupportActionBar(toolbar)
         if (collapsingToolbarLayout != null)
             NavigationUI.setupWithNavController(
