@@ -4,5 +4,5 @@ import androidx.appcompat.widget.Toolbar
 import com.google.android.material.appbar.CollapsingToolbarLayout
 
 interface ToolbarProvider {
-    fun setUpTooolbar(toolbar:Toolbar,collapsingToolbarLayout:CollapsingToolbarLayout?=null)
+    fun setUpToolbar(toolbar:Toolbar, collapsingToolbarLayout:CollapsingToolbarLayout?=null)
 }

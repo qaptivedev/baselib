@@ -187,7 +187,7 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks,ToolbarProvide
 
     }
 
-    override fun setUpTooolbar(
+    override fun setUpToolbar(
         toolbar: Toolbar,
         collapsingToolbarLayout: CollapsingToolbarLayout?
     ) {
