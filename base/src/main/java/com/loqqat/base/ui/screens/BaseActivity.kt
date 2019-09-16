@@ -5,8 +5,13 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.loqqat.base.R
@@ -14,7 +19,7 @@ import com.loqqat.base.ktx.ActivityHelper.enterFullScreen
 import com.loqqat.base.ktx.ActivityHelper.exitFullScreen
 import com.loqqat.base.utils.DisableableAppBarLayoutBehavior
 
-abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
+abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks,ToolbarProvider {
      var isInFulScreen = false
      var isDrawerEnabled = true
      var isFloatingButtonEnabled = true
@@ -185,26 +190,30 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
 
     }
 
-    override fun setCanCollapseToolbar(boolean: Boolean) {
-        getAppBarLayoutBehavior()?.enabled = boolean
+    override fun setUpToolbar(
+        toolbar: Toolbar?,
+        collapsingToolbarLayout: CollapsingToolbarLayout?
+    ) {
+        if(toolbar==null)
+            return
+        setSupportActionBar(toolbar)
+        if (collapsingToolbarLayout != null)
+            NavigationUI.setupWithNavController(
+                collapsingToolbarLayout,
+                toolbar,
+                getNavController(),
+                getAppBarConfiguration()
+            )
+        else
+            NavigationUI.setupWithNavController(
+                toolbar,
+                getNavController(),
+                getAppBarConfiguration()
+            )
     }
 
-    override fun collapseToolbar(animate: Boolean) {
-        getAppBar()?.setExpanded(false, animate)
-    }
-
-    override fun expandToolbar(animate: Boolean) {
-        getAppBar()?.setExpanded(true, animate)
-    }
-
-    open fun getAppBarLayoutBehavior(): DisableableAppBarLayoutBehavior? {
-        return null
-    }
-
-    open fun getAppBar(): AppBarLayout? {
-        return null
-    }
-
+    abstract fun getAppBarConfiguration(): AppBarConfiguration
+    abstract fun getNavController(): NavController
     abstract fun getNavigationView(): NavigationView?
     abstract fun getDrawerLayout(): DrawerLayout?
     abstract fun getActionBarDrawerToggle(): ActionBarDrawerToggle?
