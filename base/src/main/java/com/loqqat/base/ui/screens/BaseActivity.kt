@@ -5,19 +5,12 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.NavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.loqqat.base.R
 import com.loqqat.base.ktx.ActivityHelper.enterFullScreen
 import com.loqqat.base.ktx.ActivityHelper.exitFullScreen
-import com.loqqat.base.utils.DisableableAppBarLayoutBehavior
 
 abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
      var isInFulScreen = false
