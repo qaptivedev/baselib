@@ -154,7 +154,10 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     }
 
     override fun onNavigateUp() {
-        findNavController().navigateUp()
+        if(!findNavController().navigateUp())
+        {
+            activity?.onBackPressed()
+        }
     }
 
     override fun onNavigateAction(navigationActionId: NavDirections) {
