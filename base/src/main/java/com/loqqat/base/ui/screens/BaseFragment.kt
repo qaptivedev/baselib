@@ -134,11 +134,6 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         vieModel.actionCallBacks = this
-        if(activity!=null)
-        {
-            (activity as ToolbarProvider).setUpToolbar(getToolbar(),getCollapsingToolbarLayout())
-            activity?.title = ""
-        }
     }
 
     /**
@@ -178,7 +173,4 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     }
 
-    abstract fun getToolbar():Toolbar?
-
-    abstract fun getCollapsingToolbarLayout(): CollapsingToolbarLayout?
 }
