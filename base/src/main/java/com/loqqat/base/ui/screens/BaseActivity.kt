@@ -19,7 +19,7 @@ import com.loqqat.base.ktx.ActivityHelper.enterFullScreen
 import com.loqqat.base.ktx.ActivityHelper.exitFullScreen
 import com.loqqat.base.utils.DisableableAppBarLayoutBehavior
 
-abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks,ToolbarProvider {
+abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
      var isInFulScreen = false
      var isDrawerEnabled = true
      var isFloatingButtonEnabled = true
@@ -190,30 +190,6 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks,ToolbarProvide
 
     }
 
-    override fun setUpToolbar(
-        toolbar: Toolbar?,
-        collapsingToolbarLayout: CollapsingToolbarLayout?
-    ) {
-        if(toolbar==null)
-            return
-        setSupportActionBar(toolbar)
-        if (collapsingToolbarLayout != null)
-            NavigationUI.setupWithNavController(
-                collapsingToolbarLayout,
-                toolbar,
-                getNavController(),
-                getAppBarConfiguration()
-            )
-        else
-            NavigationUI.setupWithNavController(
-                toolbar,
-                getNavController(),
-                getAppBarConfiguration()
-            )
-    }
-
-    abstract fun getAppBarConfiguration(): AppBarConfiguration
-    abstract fun getNavController(): NavController
     abstract fun getNavigationView(): NavigationView?
     abstract fun getDrawerLayout(): DrawerLayout?
     abstract fun getActionBarDrawerToggle(): ActionBarDrawerToggle?
