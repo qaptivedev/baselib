@@ -22,7 +22,7 @@ abstract class BaseSectionsRecyclerViewAdapter<KEY, DATA, VH : RecyclerView.View
             count+=set.value.size
             count++
         }
-        if (count == 0 && progressBar?.visibility ?: View.GONE == View.GONE)
+        emptyView?.visibility = if (count == 0 && progressBar?.visibility ?: View.GONE == View.GONE)
             View.VISIBLE
         else
             View.GONE
