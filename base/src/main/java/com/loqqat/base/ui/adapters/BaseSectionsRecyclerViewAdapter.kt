@@ -1,9 +1,14 @@
 package com.loqqat.base.ui.adapters
 
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class BaseSectionsRecyclerViewAdapter<KEY, DATA, VH : RecyclerView.ViewHolder>(var data: MutableMap<KEY, ArrayList<DATA>>) :
     RecyclerView.Adapter<VH>() {
+
+    var emptyView: View? = null
+    var progressBar: View? = null
+    var errorView: View? = null
 
 
     final override fun getItemCount(): Int {
@@ -13,6 +18,10 @@ abstract class BaseSectionsRecyclerViewAdapter<KEY, DATA, VH : RecyclerView.View
             count+=set.value.size
             count++
         }
+        if (count == 0 && progressBar?.visibility ?: View.GONE == View.GONE)
+            View.VISIBLE
+        else
+            View.GONE
         return count
     }
 
@@ -48,6 +57,55 @@ abstract class BaseSectionsRecyclerViewAdapter<KEY, DATA, VH : RecyclerView.View
                 return 0
         }
         return 0
+    }
+
+    /*
+       For showing loader in timeline and contact fragment only
+     */
+    open fun showLoading() {
+        emptyView?.visibility = View.GONE
+        errorView?.visibility = View.GONE
+        progressBar?.visibility = View.VISIBLE
+        notifyDataSetChanged()
+    }
+
+    open fun hideLoading() {
+        progressBar?.visibility = View.GONE
+        errorView?.visibility = View.GONE
+        emptyView?.visibility = if (data?.size == 0) View.VISIBLE else View.GONE
+    }
+
+    /*
+    For showing error view in timeline and contact fragment only
+  */
+    open fun showError() {
+        emptyView?.visibility = View.GONE
+        progressBar?.visibility = View.GONE
+        errorView?.visibility = View.VISIBLE
+        notifyDataSetChanged()
+    }
+
+    /**
+     * Set data set
+     * @param data data to be set
+     */
+    open fun setItems(data:  MutableMap<KEY, ArrayList<DATA>>?) {
+        this.data.clear()
+        if (data != null) {
+            this.data.putAll(data)
+        }
+        notifyDataSetChanged()
+    }
+
+    /**
+     * Clear all data in recyclerview
+     *
+     * @param data cleared
+     */
+
+    open fun clearData() {
+        data.clear()
+        notifyDataSetChanged()
     }
 
     abstract fun bindHeader(key:KEY?, holder: VH)
