@@ -3,12 +3,16 @@ package com.loqqat.base.ui.adapters
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class BaseSectionsRecyclerViewAdapter<KEY, DATA, VH : RecyclerView.ViewHolder>(var data: MutableMap<KEY, ArrayList<DATA>>) :
-    RecyclerView.Adapter<VH>() {
+abstract class BaseSectionsRecyclerViewAdapter<KEY, DATA, VH : RecyclerView.ViewHolder>(var data: MutableMap<KEY?, List<DATA>> = mutableMapOf()):RecyclerView.Adapter<VH>() {
 
     var emptyView: View? = null
     var progressBar: View? = null
     var errorView: View? = null
+
+    object ViewType{
+        val HEADER=1
+        val ITEM=0
+    }
 
 
     final override fun getItemCount(): Int {
@@ -50,13 +54,13 @@ abstract class BaseSectionsRecyclerViewAdapter<KEY, DATA, VH : RecyclerView.View
         for(set in data)
         {
             if(count==position)
-                return 1
+                return ViewType.HEADER
             count++
             count+=set.value.size
             if(position<count)
-                return 0
+                return ViewType.ITEM
         }
-        return 0
+        return ViewType.ITEM
     }
 
     /*
@@ -89,7 +93,7 @@ abstract class BaseSectionsRecyclerViewAdapter<KEY, DATA, VH : RecyclerView.View
      * Set data set
      * @param data data to be set
      */
-    open fun setItems(data:  MutableMap<KEY, ArrayList<DATA>>?) {
+    open fun setItems(data:  Map<KEY?, List<DATA>>?) {
         this.data.clear()
         if (data != null) {
             this.data.putAll(data)
