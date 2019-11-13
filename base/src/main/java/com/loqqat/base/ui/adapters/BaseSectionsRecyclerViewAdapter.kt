@@ -1,6 +1,5 @@
 package com.loqqat.base.ui.adapters
 
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
@@ -46,33 +45,39 @@ abstract class BaseSectionsRecyclerViewAdapter<KEY, DATA, VH : RecyclerView.View
     }
 
     final override fun onBindViewHolder(holder: VH, position: Int) {
-//        var count = 0
-        calculate(holder,position)
-//        for (set in data) {
-//            if (count == position) {
-//                bindHeader(set.key, holder)
-//                return
-//            }
-//            count++
-//            for (item in set.value) {
-//                if (position == count) {
-//                    bindItem(item, holder)
-//                    return
-//                }
-//                count++
-//            }
-//        }
+        var count=0
+        for ( key in data.keys)
+        {
+            count+=(data[key]?.size?:0)+1
+            if(count<=position)
+                continue
+            val p=((data[key]?.size?:0)+1)-(count-position)
+            if(p==0)
+            {
+                bindHeader(key, holder)
+                return
+            }
+            else
+            {
+                bindItem(data[key]?.get(p-1),holder)
+                return
+            }
+        }
     }
 
     final override fun getItemViewType(position: Int): Int {
-        var count = 0
-        for (set in data) {
-            if (count == position)
-                return ViewType.HEADER
-            count++
-            count += set.value.size
-            if (position < count)
-                return ViewType.ITEM
+        var count=0
+        for ( key in data.keys)
+        {
+            count+=(data[key]?.size?:0)+1
+            if(count<=position)
+                continue
+            val p=((data[key]?.size?:0)+1)-(count-position)
+            return if(p==0) {
+                ViewType.HEADER
+            } else {
+                ViewType.ITEM
+            }
         }
         return ViewType.ITEM
     }
@@ -148,28 +153,6 @@ abstract class BaseSectionsRecyclerViewAdapter<KEY, DATA, VH : RecyclerView.View
     fun getChildCount():Int
     {
         return data.values.size
-    }
-
-    fun calculate(holder: VH,position:Int)
-    {
-        var count=0
-        for ( key in data.keys)
-        {
-            count+=(data[key]?.size?:0)+1
-            if(count<=position)
-                continue
-            val p=((data[key]?.size?:0)+1)-(count-position)
-            if(p==0)
-            {
-                bindHeader(key, holder)
-                return
-            }
-            else
-            {
-                bindItem(data[key]?.get(p-1),holder)
-                return
-            }
-        }
     }
 
     /**
