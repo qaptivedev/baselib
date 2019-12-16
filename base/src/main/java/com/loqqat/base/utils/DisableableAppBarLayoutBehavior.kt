@@ -27,6 +27,6 @@ class DisableableAppBarLayoutBehavior(context: Context, attrs: AttributeSet) : A
         target: View,
         axes: Int
     ): Boolean {
-        return enabled && super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, axes)
+        return enabled //&& super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, axes)
     }
 }

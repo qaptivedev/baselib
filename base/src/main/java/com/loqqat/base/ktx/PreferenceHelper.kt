@@ -2,7 +2,7 @@ package com.loqqat.base.ktx
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 
 object PreferenceHelper {
 
@@ -18,7 +18,7 @@ object PreferenceHelper {
     fun customPrefs(context: Context, name: String): SharedPreferences
             = context.getSharedPreferences(name, Context.MODE_PRIVATE)
 
-    inline fun SharedPreferences.edit(operation: (SharedPreferences.Editor) -> Unit) {
+    private inline fun SharedPreferences.edit(operation: (SharedPreferences.Editor) -> Unit) {
         val editor = this.edit()
         operation(editor)
         editor.apply()
@@ -57,7 +57,6 @@ object PreferenceHelper {
     /**
      * finds value on given key.
      * [T] is the type of value
-     * @param defaultValue optional default value - will take null for strings, false for bool and -1 for numeric values if [defaultValue] is not specified
      */
     inline operator fun <reified T : Any> SharedPreferences.get(key: String): T? {
         return when (T::class) {

@@ -20,16 +20,13 @@ class LocaleHelper(base: Context): ContextWrapper(base){
                 } else {
                     setSystemLocaleLegacy(config, locale)
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    config.setLayoutDirection(locale)
-                    context = context.createConfigurationContext(config)
-                } else {
-                    context.resources.updateConfiguration(config, context.resources.displayMetrics)
-                }
+                config.setLayoutDirection(locale)
+                context = context.createConfigurationContext(config)
             }
             return LocaleHelper(context)
         }
 
+        @Suppress("DEPRECATION")
         fun getSystemLocaleLegacy(config: Configuration): Locale {
             return config.locale
         }
@@ -39,6 +36,7 @@ class LocaleHelper(base: Context): ContextWrapper(base){
             return config.locales.get(0)
         }
 
+        @Suppress("DEPRECATION")
         fun setSystemLocaleLegacy(config: Configuration, locale: Locale) {
             config.locale = locale
         }
