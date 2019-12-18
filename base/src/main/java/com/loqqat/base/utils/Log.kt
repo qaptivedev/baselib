@@ -110,7 +110,7 @@ class Log {
                 -1
         }
 
-        fun String.V(tag:String)
+        fun String.v(tag:String)
         {
             v(tag,this)
         }
