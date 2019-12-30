@@ -171,4 +171,8 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     }
 
+    override fun performTask(task: Intent, any: Any?) {
+        callBack?.performTask(task,any)
+    }
+
 }
