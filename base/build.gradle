@@ -63,7 +63,7 @@ def getVersionName = { ->
 }
 
 def getArtificatId = { ->
-    return "baselib"
+    return "base"
 }
 
 publishing {
