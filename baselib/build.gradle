@@ -70,7 +70,7 @@ def getArtificatId = { ->
 publishing {
     publications {
         bar(MavenPublication) {
-            groupId 'com.loqqat.base'
+            groupId 'com.qaptive.base'
             artifactId getArtificatId()
             version getVersionName()
             artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
@@ -79,7 +79,7 @@ publishing {
 
     repositories {
         maven {
-            name = "baselib"
+            name = "BaseLib"
             /** Configure path of your package repository on Github
              ** Replace GITHUB_USERID with your/organisation Github userID
              ** and REPOSITORY with the repository name on GitHub
