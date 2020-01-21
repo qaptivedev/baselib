@@ -109,5 +109,10 @@ class Log {
             else
                 -1
         }
+
+        fun String.v(tag:String)
+        {
+            v(tag,this)
+        }
     }
 }

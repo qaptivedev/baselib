@@ -10,7 +10,7 @@ import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.loqqat.base.viewmodel.BaseViewModel
@@ -22,9 +22,9 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     protected val vieModel: VM by lazy {
         if (isLifecycleOwnerActivity()) {
-            ViewModelProviders.of(activity!!).get(getViewModelClass())
+            ViewModelProvider(activity!!).get(getViewModelClass())
         } else {
-            ViewModelProviders.of(this).get(getViewModelClass())
+            ViewModelProvider(this).get(getViewModelClass())
         }
 
     }
@@ -169,6 +169,10 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         if(finishCurrent)
             activity?.finish()
 
+    }
+
+    override fun performTask(task: Intent, any: Any?) {
+        callBack?.performTask(task,any)
     }
 
 }

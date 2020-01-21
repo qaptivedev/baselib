@@ -43,4 +43,6 @@ interface ViewModelCallBacks {
     fun onNavigateToActivity(activityClass:Class<*>,finishCurrent:Boolean=false)
 
     fun onNavigateUp()
+
+    fun performTask(task:Intent,any: Any?)
 }

@@ -123,7 +123,6 @@ abstract class BaseSectionsRecyclerViewAdapter<KEY, DATA, VH : RecyclerView.View
     /**
      * Clear all data in recyclerview
      *
-     * @param data cleared
      */
 
     fun clearData() {
