@@ -12,8 +12,8 @@ android {
     defaultConfig {
         minSdkVersion 18
         targetSdkVersion 29
-        versionCode 3
-        versionName "3.0.0"
+        versionCode 4
+        versionName "3.0.1-aplpha01"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -60,7 +60,7 @@ def githubProperties = new Properties()
 githubProperties.load(new FileInputStream(rootProject.file("github.properties"))) //Set env variable GPR_USER & GPR_API_KEY if not adding a properties file
 
 def getVersionName = { ->
-    return "3.0.0" // Replace with version Name
+    return "3.0.1-aplpha01" // Replace with version Name
 }
 
 def getArtificatId = { ->

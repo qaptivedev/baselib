@@ -3,6 +3,7 @@ package com.qaptive.base.ui.screens
 import android.content.Intent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 import com.qaptive.base.R
 
 interface FragmentCallBacks {
@@ -18,17 +19,17 @@ interface FragmentCallBacks {
         message: String,
         actionString: String? = null,
         onclick: () -> Unit
-    )
+    ): AlertDialog
 
     fun showInfo(
         message: String,
         @StringRes resId: Int,
         onclick: () -> Unit
-    )
+    ): AlertDialog
 
     fun showInfo(
         message: String
-    )
+    ): AlertDialog
 
     fun showInfo(
         @StringRes message: Int
@@ -43,7 +44,7 @@ interface FragmentCallBacks {
         negativeAction: (() -> Unit)? = null,
         triggerActionOnDismiss: Boolean=false,
         canDismiss:Boolean=true
-    )
+    ): AlertDialog
 
     fun showInfo(
         @StringRes title: Int? = null,
@@ -54,7 +55,7 @@ interface FragmentCallBacks {
         negativeAction: (() -> Unit)? = null,
         triggerActionOnDismiss: Boolean=false,
         canDismiss:Boolean=true
-    )
+    ): AlertDialog
 
     fun performTask(task:Intent,any: Any?)
 }

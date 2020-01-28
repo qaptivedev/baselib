@@ -69,16 +69,16 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
             this.floatingAction = floatingAction
     }
 
-    override fun showInfo(message: String, actionString: String?, onclick: () -> Unit) {
-        showDialog(null, message, actionString, onclick, null, {})
+    override fun showInfo(message: String, actionString: String?, onclick: () -> Unit) :AlertDialog{
+        return showDialog(null, message, actionString, onclick, null, {})
     }
 
-    override fun showInfo(message: String, resId: Int, onclick: () -> Unit) {
-        showInfo(message, getString(resId), onclick)
+    override fun showInfo(message: String, resId: Int, onclick: () -> Unit) :AlertDialog{
+        return showInfo(message, getString(resId), onclick)
     }
 
-    override fun showInfo(message: String) {
-        showInfo(message, null) {}
+    override fun showInfo(message: String) :AlertDialog{
+        return showInfo(message, null) {}
     }
 
     override fun showInfo(message: Int) {
@@ -94,8 +94,8 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
         negativeAction: (() -> Unit)?,
         triggerActionOnDismiss: Boolean,
         canDismiss: Boolean
-    ) {
-        showDialog(title, message, positiveButton, positiveAction, negativeButton, negativeAction,triggerActionOnDismiss,canDismiss)
+    ) :AlertDialog{
+        return showDialog(title, message, positiveButton, positiveAction, negativeButton, negativeAction,triggerActionOnDismiss,canDismiss)
     }
 
     override fun showInfo(
@@ -103,7 +103,7 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
         negativeAction: (() -> Unit)?,
         triggerActionOnDismiss: Boolean,
         canDismiss: Boolean
-    ) {
+    ) :AlertDialog{
         var titleString: String? = null
         var positiveButtonString: String? = null
         var negativeButtonString: String? = null
@@ -116,7 +116,7 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
         if (negativeButton != null) {
             negativeButtonString = getString(negativeButton)
         }
-        showInfo(
+        return showInfo(
             titleString,
             getString(message),
             positiveButtonString,
@@ -140,7 +140,7 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
         negativeAction: (() -> Unit)?,
         triggerActionOnDismiss: Boolean=false,
         dialogDismiss:Boolean=true
-    ) {
+    ) : AlertDialog{
         var isClicked=false
         val dialogBuilder = AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
         dialogBuilder.setTitle(title ?: getString(R.string.default_dialogue_title))
@@ -179,8 +179,9 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
             }
         }
         dialogBuilder.setCancelable(dialogDismiss)
-        runOnUiThread { dialogBuilder.create().show() }
-
+        val dialog=dialogBuilder.create()
+        runOnUiThread { dialog.show() }
+        return dialog
     }
 
     abstract fun getNavigationView(): NavigationView?
