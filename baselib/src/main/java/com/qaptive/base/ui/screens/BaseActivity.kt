@@ -81,8 +81,8 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
         return showInfo(message, null) {}
     }
 
-    override fun showInfo(message: Int) {
-        showInfo(getString(message))
+    override fun showInfo(message: Int):AlertDialog {
+        return showInfo(getString(message))
     }
 
     override fun showInfo(

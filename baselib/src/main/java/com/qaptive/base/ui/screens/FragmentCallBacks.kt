@@ -33,7 +33,7 @@ interface FragmentCallBacks {
 
     fun showInfo(
         @StringRes message: Int
-    )
+    ): AlertDialog
 
     fun showInfo(
         title: String? = null,

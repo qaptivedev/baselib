@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -65,16 +66,16 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         callBack?.floatingAction(floatingActionButton())
     }
 
-    override fun showInfo(message: String, actionString: Int, onclick: () -> Unit) {
-        callBack?.showInfo(message, actionString, onclick)
+    override fun showInfo(message: String, actionString: Int, onclick: () -> Unit): AlertDialog? {
+        return callBack?.showInfo(message, actionString, onclick)
     }
 
-    override fun showInfo(message: Int) {
-        callBack?.showInfo(message)
+    override fun showInfo(message: Int):AlertDialog? {
+        return callBack?.showInfo(message)
     }
 
-    override fun showInfo(message: String) {
-        callBack?.showInfo(message)
+    override fun showInfo(message: String):AlertDialog? {
+        return callBack?.showInfo(message)
     }
 
     override fun showLoading(resId: Int) {
@@ -89,8 +90,8 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         callBack?.showLoading(message)
     }
 
-    override fun showInfo(message: String, actionString: String, onclick: () -> Unit) {
-        callBack?.showInfo(message, actionString, onclick)
+    override fun showInfo(message: String, actionString: String, onclick: () -> Unit) :AlertDialog?{
+        return callBack?.showInfo(message, actionString, onclick)
     }
 
     override fun showInfo(
@@ -102,8 +103,8 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         negativeAction: (() -> Unit)?,
         triggerActionOnDismiss: Boolean,
         canDismiss:Boolean
-    ) {
-        callBack?.showInfo(title, message, positiveButton, positiveAction, negativeButton, negativeAction,triggerActionOnDismiss,canDismiss)
+    ) :AlertDialog?{
+        return callBack?.showInfo(title, message, positiveButton, positiveAction, negativeButton, negativeAction,triggerActionOnDismiss,canDismiss)
     }
 
     override fun showInfo(
@@ -112,8 +113,8 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         negativeAction: (() -> Unit)?,
         triggerActionOnDismiss: Boolean,
         canDismiss:Boolean
-    ) {
-        callBack?.showInfo(
+    ) :AlertDialog?{
+        return callBack?.showInfo(
             title,
             message,
             positiveButton,

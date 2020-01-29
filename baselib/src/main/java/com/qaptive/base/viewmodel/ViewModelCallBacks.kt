@@ -3,14 +3,15 @@ package com.qaptive.base.viewmodel
 import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavDirections
 import com.qaptive.base.R
 
 interface ViewModelCallBacks {
-    fun showInfo(message: String, actionString: String = "Ok", onclick: () -> Unit)
-    fun showInfo(message: String)
-    fun showInfo(message: String, @StringRes actionString: Int = R.string.ok, onclick: () -> Unit)
-    fun showInfo(@StringRes message: Int)
+    fun showInfo(message: String, actionString: String = "Ok", onclick: () -> Unit): AlertDialog?
+    fun showInfo(message: String):AlertDialog?
+    fun showInfo(message: String, @StringRes actionString: Int = R.string.ok, onclick: () -> Unit):AlertDialog?
+    fun showInfo(@StringRes message: Int):AlertDialog?
     fun showInfo(
         title: String? = null,
         message: String,
@@ -21,7 +22,7 @@ interface ViewModelCallBacks {
         triggerActionOnDismiss: Boolean=false,
         canDismiss:Boolean=true
 
-    )
+    ):AlertDialog?
     fun showInfo(
         @StringRes title: Int? = null,
         @StringRes message: Int,
@@ -31,7 +32,7 @@ interface ViewModelCallBacks {
         negativeAction: (() -> Unit)? = null,
         triggerActionOnDismiss: Boolean=false,
         canDismiss:Boolean=true
-    )
+    ):AlertDialog?
 
     fun onNavigate(navigationActionId: Int,bundle: Bundle?=null)
     fun onNavigateAction(navigationActionId: NavDirections)
