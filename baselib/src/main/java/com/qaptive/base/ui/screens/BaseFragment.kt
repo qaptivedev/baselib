@@ -21,6 +21,17 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     lateinit var binder: T
     var callBack: FragmentCallBacks? = null
 
+    var isPaused=false
+
+    var pendingNavigationActionId=0
+    var pendingNavigationActionBundle:Bundle?=null
+    var pendingNavigateUp=false
+    var pendingNavigationIntent: Intent?=null
+    var pendingNavigationActivityClass: Class<*>?=null
+    var pendingNavigationFinishCurrent=false
+    var pendingNavDirections:NavDirections?=null
+
+
     protected val vieModel: VM by lazy {
         if (isLifecycleOwnerActivity()) {
             ViewModelProvider(activity!!).get(getViewModelClass())
@@ -58,12 +69,19 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         }
     }
 
+    override fun onPause() {
+        isPaused = true
+        super.onPause()
+    }
+
     override fun onResume() {
+        isPaused = false
         super.onResume()
         callBack?.toggleFullScreen(isFullScreen())
         callBack?.toggleDrawerEnabled(navigationDrawerEnabled())
         callBack?.floatingActionButton(floatingActionButtonRequired())
         callBack?.floatingAction(floatingActionButton())
+        continuePendingNavigation()
     }
 
     override fun showInfo(message: String, actionString: Int, onclick: () -> Unit): AlertDialog? {
@@ -126,7 +144,13 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         )
     }
 
-    override fun    onNavigate(navigationActionId: Int, bundle: Bundle?) {
+    override fun onNavigate(navigationActionId: Int, bundle: Bundle?) {
+        if(isPaused)
+        {
+            pendingNavigationActionId=navigationActionId
+            pendingNavigationActionBundle=bundle
+            return
+        }
         findNavController().navigate(navigationActionId, bundle)
     }
 
@@ -148,6 +172,11 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     }
 
     override fun onNavigateUp() {
+        if(isPaused)
+        {
+            pendingNavigateUp=true
+            return
+        }
         if(!findNavController().navigateUp())
         {
             activity?.onBackPressed()
@@ -155,16 +184,33 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     }
 
     override fun onNavigateAction(navigationActionId: NavDirections) {
+        if(isPaused)
+        {
+            pendingNavDirections=navigationActionId
+            return
+        }
         findNavController().navigate(navigationActionId)
     }
 
     override fun onNavigateToActivity(intent: Intent, finishCurrent: Boolean) {
+        if(isPaused)
+        {
+            pendingNavigationIntent=intent
+            pendingNavigationFinishCurrent=finishCurrent
+            return
+        }
         activity?.startActivity(intent)
         if (finishCurrent)
             activity?.finish()
     }
 
     override fun onNavigateToActivity(activityClass: Class<*>, finishCurrent: Boolean) {
+        if(isPaused)
+        {
+            pendingNavigationActivityClass=activityClass
+            pendingNavigationFinishCurrent=finishCurrent
+            return
+        }
         val intent=Intent(activity,activityClass)
         activity?.startActivity(intent)
         if(finishCurrent)
@@ -176,4 +222,39 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         callBack?.performTask(task,any)
     }
 
+    protected fun continuePendingNavigation()
+    {
+        if(pendingNavigationActionId!=0)
+        {
+            onNavigate(pendingNavigationActionId,pendingNavigationActionBundle)
+        }
+        else if(pendingNavDirections!=null)
+        {
+            onNavigateAction(pendingNavDirections!!)
+        }
+        else if(pendingNavigationIntent!=null)
+        {
+            onNavigateToActivity(pendingNavigationIntent!!,pendingNavigationFinishCurrent)
+        }
+        else if(pendingNavigationActivityClass!=null)
+        {
+            onNavigateToActivity(pendingNavigationActivityClass!!,pendingNavigationFinishCurrent)
+        }
+        else if(pendingNavigateUp)
+        {
+            onNavigateUp()
+        }
+        resentPendingState()
+    }
+
+    protected fun resentPendingState()
+    {
+        pendingNavigationActionId=0
+        pendingNavigationActionBundle=null
+        pendingNavigateUp=false
+        pendingNavigationIntent=null
+        pendingNavigationActivityClass=null
+        pendingNavigationFinishCurrent=false
+        pendingNavDirections=null
+    }
 }
