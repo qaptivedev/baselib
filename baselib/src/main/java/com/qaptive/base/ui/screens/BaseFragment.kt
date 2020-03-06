@@ -33,12 +33,15 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
 
     protected val vieModel: VM by lazy {
-        if (isLifecycleOwnerActivity()) {
+        createViewModel()
+    }
+
+    open fun createViewModel() : VM {
+        return if (isLifecycleOwnerActivity()) {
             ViewModelProvider(activity!!).get(getViewModelClass())
         } else {
             ViewModelProvider(this).get(getViewModelClass())
         }
-
     }
 
     abstract fun isFullScreen(): Boolean
