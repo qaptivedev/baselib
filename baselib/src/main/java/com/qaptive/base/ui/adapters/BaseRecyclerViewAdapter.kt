@@ -3,7 +3,6 @@ package com.qaptive.base.ui.adapters
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-
 /**
  * Base Class for RecyclerView Adapters, all the general handling for adapter are done here, Like adding , appending ,removing Items etc.
  *
