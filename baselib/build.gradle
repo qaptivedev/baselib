@@ -60,11 +60,16 @@ def githubProperties = new Properties()
 githubProperties.load(new FileInputStream(rootProject.file("github.properties"))) //Set env variable GPR_USER & GPR_API_KEY if not adding a properties file
 
 def getVersionName = { ->
-    return "3.0.1-aplpha03" // Replace with version Name
+    return "3.0.1-aplpha04" // Replace with version Name
 }
 
 def getArtificatId = { ->
     return "baselib"
+}
+
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
 }
 
 publishing {
@@ -73,6 +78,7 @@ publishing {
             groupId 'com.qaptive.base'
             artifactId getArtificatId()
             version getVersionName()
+            artifact(sourceJar)
             artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
         }
     }
