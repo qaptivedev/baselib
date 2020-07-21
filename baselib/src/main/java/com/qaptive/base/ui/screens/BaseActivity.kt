@@ -1,24 +1,80 @@
 package com.qaptive.base.ui.screens
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.qaptive.base.R
 import com.qaptive.base.ktx.ActivityHelper.enterFullScreen
 import com.qaptive.base.ktx.ActivityHelper.exitFullScreen
+import com.qaptive.base.utils.EventObserver
+import com.qaptive.base.viewmodel.BaseActivityViewModel
 
-abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
-     var isInFulScreen = false
-     var isDrawerEnabled = true
-     var isFloatingButtonEnabled = true
-     var floatingAction: (() -> Unit)? = null
+abstract class BaseActivity : AppCompatActivity() {
 
-    override fun toggleFullScreen(enableFullScreen: Boolean) {
+    val viewModel by lazy {
+        ViewModelProvider(this).get(BaseActivityViewModel::class.java)
+    }
+    var isInFulScreen = false
+    var isDrawerEnabled = true
+    var isFloatingButtonEnabled = true
+    var floatingAction: (() -> Unit)? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.isFullScreen.observe(this, Observer { toggleFullScreen(it == true) })
+        viewModel.enableDrawer.observe(this, Observer { toggleDrawerEnabled(it == true) })
+        viewModel.hasFloatingAction.observe(this, Observer { floatingActionButton(it == true) })
+        viewModel.floatingAction.observe(this, Observer { floatingAction(it?.task) })
+        viewModel.floatingButtonSrc.observe(this, Observer {
+            it?.let { toggleFloatingButtonSrc(it) }
+        })
+        viewModel.infoMessage.observe(this, EventObserver {
+            showDialog(
+                it.getTitle(),
+                it.getMessage(),
+                it.getPositiveButton(),
+                it.positiveAction,
+                it.getNegativeButton(),
+                it.negativeAction,
+                it.getNeutralButton(),
+                it.triggerActionOnDismiss,
+                it.canDismiss
+            )
+        })
+        viewModel.loading.observe(this, Observer {
+            it?.let {
+                if (it.isLoading) {
+                    showLoading(
+                        it.getTitle(),
+                        it.getMessage(),
+                        it.getPositiveButton(),
+                        it.positiveAction,
+                        it.getNegativeButton(),
+                        it.negativeAction,
+                        it.getNeutralButton(),
+                        it.triggerActionOnDismiss,
+                        it.canDismiss
+                    )
+                } else {
+                    hideLoading()
+                }
+            }
+        })
+
+        viewModel.action.observe(this, EventObserver {
+            performTask(it.task, it.any)
+        })
+    }
+
+    private fun toggleFullScreen(enableFullScreen: Boolean) {
         if (enableFullScreen) {
             if (!isInFulScreen) {
                 enterFullScreen()
@@ -32,25 +88,25 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
         }
     }
 
-    override fun toggleDrawerEnabled(enableDrawer: Boolean) {
+    private fun toggleDrawerEnabled(enableDrawer: Boolean) {
         if (enableDrawer) {
             if (!isDrawerEnabled) {
                 isDrawerEnabled = true
                 getNavigationView()?.isEnabled = false
                 getDrawerLayout()?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                getActionBarDrawerToggle()?.isDrawerIndicatorEnabled=true
+                getActionBarDrawerToggle()?.isDrawerIndicatorEnabled = true
             }
         } else {
             if (isDrawerEnabled) {
 
                 isDrawerEnabled = false
                 getDrawerLayout()?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                getActionBarDrawerToggle()?.isDrawerIndicatorEnabled=false
+                getActionBarDrawerToggle()?.isDrawerIndicatorEnabled = false
             }
         }
     }
 
-    override fun floatingActionButton(enableFloatingActionButton: Boolean) {
+    private fun floatingActionButton(enableFloatingActionButton: Boolean) {
         if (enableFloatingActionButton) {
             if (!isFloatingButtonEnabled) {
                 (getFloatingActionButton() as View?)?.visibility = View.VISIBLE
@@ -64,110 +120,55 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
         }
     }
 
-    override fun floatingAction(floatingAction: (() -> Unit)?) {
+    private fun floatingAction(floatingAction: (() -> Unit)?) {
         if (floatingAction != null)
             this.floatingAction = floatingAction
     }
 
-    override fun showInfo(message: String, actionString: String?, onclick: () -> Unit) :AlertDialog{
-        return showDialog(null, message, actionString, onclick, null, {})
-    }
-
-    override fun showInfo(message: String, resId: Int, onclick: () -> Unit) :AlertDialog{
-        return showInfo(message, getString(resId), onclick)
-    }
-
-    override fun showInfo(message: String) :AlertDialog{
-        return showInfo(message, null) {}
-    }
-
-    override fun showInfo(message: Int):AlertDialog {
-        return showInfo(getString(message))
-    }
-
-    override fun showInfo(
-        title: String?,
-        message: String,
-        positiveButton: String?,
-        positiveAction: (() -> Unit)?,
-        negativeButton: String?,
-        negativeAction: (() -> Unit)?,
-        triggerActionOnDismiss: Boolean,
-        canDismiss: Boolean
-    ) :AlertDialog{
-        return showDialog(title, message, positiveButton, positiveAction, negativeButton, negativeAction,triggerActionOnDismiss,canDismiss)
-    }
-
-    override fun showInfo(
-        @StringRes title: Int?, @StringRes message: Int, @StringRes positiveButton: Int?, positiveAction: (() -> Unit)?, @StringRes negativeButton: Int?,
-        negativeAction: (() -> Unit)?,
-        triggerActionOnDismiss: Boolean,
-        canDismiss: Boolean
-    ) :AlertDialog{
-        var titleString: String? = null
-        var positiveButtonString: String? = null
-        var negativeButtonString: String? = null
-        if (title != null) {
-            titleString = getString(title)
-        }
-        if (positiveButton != null) {
-            positiveButtonString = getString(positiveButton)
-        }
-        if (negativeButton != null) {
-            negativeButtonString = getString(negativeButton)
-        }
-        return showInfo(
-            titleString,
-            getString(message),
-            positiveButtonString,
-            positiveAction,
-            negativeButtonString,
-            negativeAction,
-            triggerActionOnDismiss,
-            canDismiss
-        )
-    }
-
-
-
-
     open fun showDialog(
         title: String? = null,
-        message: String,
+        message: String?,
         positiveButton: String? = null,
         positiveAction: (() -> Unit)?,
         negativeButton: String? = null,
         negativeAction: (() -> Unit)?,
-        triggerActionOnDismiss: Boolean=false,
-        dialogDismiss:Boolean=true
-    ) : AlertDialog{
-        var isClicked=false
-        val dialogBuilder = AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
+        neutralButton: String? = null,
+        triggerActionOnDismiss: Boolean = false,
+        dialogDismiss: Boolean = true
+    ): AlertDialog {
+        var isClicked = false
+        val dialogBuilder =
+            AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
         dialogBuilder.setTitle(title ?: getString(R.string.default_dialogue_title))
         dialogBuilder.setMessage(message)
         positiveButton?.let {
-            dialogBuilder.setCancelable(true)
             dialogBuilder.setPositiveButton(it) { dialog, _ ->
-                isClicked=true
+                isClicked = true
                 positiveAction?.invoke()
                 dialog?.dismiss()
             }
         }
         negativeButton?.let {
-            dialogBuilder.setCancelable(true)
             dialogBuilder.setNegativeButton(it) { dialog, _ ->
-                isClicked=true
+                isClicked = true
                 negativeAction?.invoke()
                 dialog?.dismiss()
             }
         }
-        if (negativeButton == null && positiveButton == null) {
-            dialogBuilder.setCancelable(true)
+
+        neutralButton?.let {
+            dialogBuilder.setNeutralButton(it) { dialog, _ ->
+                isClicked = true
+                dialog?.dismiss()
+            }
+        }
+        if (negativeButton == null && positiveButton == null && neutralButton == null) {
             dialogBuilder.setNeutralButton(
                 R.string.ok
             ) { dialog, _ ->
-                isClicked=true
-                dialog?.dismiss() }
+                isClicked = true
+                dialog?.dismiss()
+            }
         }
         if (triggerActionOnDismiss) {
             dialogBuilder.setOnDismissListener {
@@ -179,7 +180,7 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
             }
         }
         dialogBuilder.setCancelable(dialogDismiss)
-        val dialog=dialogBuilder.create()
+        val dialog = dialogBuilder.create()
         runOnUiThread { dialog.show() }
         return dialog
     }
@@ -188,4 +189,17 @@ abstract class BaseActivity:AppCompatActivity(),FragmentCallBacks {
     abstract fun getDrawerLayout(): DrawerLayout?
     abstract fun getActionBarDrawerToggle(): ActionBarDrawerToggle?
     abstract fun getFloatingActionButton(): FloatingActionButton?
+    abstract fun toggleFloatingButtonSrc(iconRes: Int)
+    abstract fun showLoading(
+        title: String? = null, message: String?, positiveButton: String? = null,
+        positiveAction: (() -> Unit)?,
+        negativeButton: String? = null,
+        negativeAction: (() -> Unit)?,
+        neutralButton: String? = null,
+        triggerActionOnDismiss: Boolean = false,
+        dialogDismiss: Boolean = true
+    )
+
+    abstract fun hideLoading()
+    abstract fun performTask(task: Intent, any: Any?)
 }
