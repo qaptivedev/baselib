@@ -6,39 +6,45 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import com.qaptive.base.models.LoadingMessage
+import com.qaptive.base.utils.EventObserver
+import com.qaptive.base.viewmodel.BaseActivityViewModel
 import com.qaptive.base.viewmodel.BaseViewModel
-import com.qaptive.base.viewmodel.ViewModelCallBacks
 
-abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(), ViewModelCallBacks {
+abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(){
     lateinit var binder: T
-    var callBack: FragmentCallBacks? = null
 
-    var isPaused=false
+    var isPaused = false
 
-    var pendingNavigationActionId=0
-    var pendingNavigationActionBundle:Bundle?=null
-    var pendingNavigateUp=false
-    var pendingNavigationIntent: Intent?=null
-    var pendingNavigationActivityClass: Class<*>?=null
-    var pendingNavigationFinishCurrent=false
-    var pendingNavDirections:NavDirections?=null
+    var pendingNavigationActionId = 0
+    var pendingNavigationActionBundle: Bundle? = null
+    var pendingNavigateUp = false
+    var pendingNavigationIntent: Intent? = null
+    var pendingNavigationActivityClass: Class<*>? = null
+    var pendingNavigationFinishCurrent = false
+    var pendingNavDirections: NavDirections? = null
 
 
-    protected val vieModel: VM by lazy {
+    protected val viewModel: VM by lazy {
         createViewModel()
     }
 
-    open fun createViewModel() : VM {
+    protected val activityViewModel by lazy {
+        ViewModelProvider(requireActivity()).get(BaseActivityViewModel::class.java)
+    }
+
+    open fun createViewModel(): VM {
         return if (isLifecycleOwnerActivity()) {
-            ViewModelProvider(activity!!).get(getViewModelClass())
+            ViewModelProvider(requireActivity()).get(getViewModelClass())
         } else {
             ViewModelProvider(this).get(getViewModelClass())
         }
@@ -54,7 +60,11 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binder = DataBindingUtil.inflate(inflater, inflateLayout(), container, false)
         onBinderCreated()
         binder.lifecycleOwner = this
@@ -62,15 +72,6 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     }
 
     abstract fun inflateLayout(): Int
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is FragmentCallBacks) {
-            callBack = context
-        } else {
-            throw Exception("FragmentActivityInterface not Implemented")
-        }
-    }
 
     override fun onPause() {
         isPaused = true
@@ -80,62 +81,56 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     override fun onResume() {
         isPaused = false
         super.onResume()
-        callBack?.toggleFullScreen(isFullScreen())
-        callBack?.toggleDrawerEnabled(navigationDrawerEnabled())
-        callBack?.floatingActionButton(floatingActionButtonRequired())
-        callBack?.floatingAction(floatingActionButton())
+        activityViewModel.toggleFullScreen(isFullScreen())
+        activityViewModel.toggleDrawerEnabled(navigationDrawerEnabled())
+        activityViewModel.floatingActionButton(floatingActionButtonRequired())
+        activityViewModel.floatingAction(floatingActionButton())
         continuePendingNavigation()
     }
 
-    override fun showInfo(message: String, actionString: Int, onclick: () -> Unit): AlertDialog? {
-        return callBack?.showInfo(message, actionString, onclick)
+    open fun showInfo(context: Context, message: String, actionString: Int, onclick: () -> Unit) {
+        activityViewModel.showInfo(context, message, actionString, onclick)
     }
 
-    override fun showInfo(message: Int):AlertDialog? {
-        return callBack?.showInfo(message)
+    open fun showInfo(context: Context, message: Int) {
+        activityViewModel.showInfo(context, message)
     }
 
-    override fun showInfo(message: String):AlertDialog? {
-        return callBack?.showInfo(message)
+    open fun showInfo(message: String) {
+        activityViewModel.showInfo(message)
     }
 
-    override fun showLoading(resId: Int) {
-        callBack?.showLoading(resId)
+    open fun showLoading(context: Context, resId: Int) {
+        activityViewModel.showLoading(context, resId)
     }
 
-    override fun hideLoading() {
-        callBack?.hideLoading()
+    open fun showLoading(loadingMessage: LoadingMessage) {
+        activityViewModel.showLoading(loadingMessage)
     }
 
-    override fun showLoading(message: String) {
-        callBack?.showLoading(message)
+    open fun hideLoading() {
+        activityViewModel.hideLoading()
     }
 
-    override fun showInfo(message: String, actionString: String, onclick: () -> Unit) :AlertDialog?{
-        return callBack?.showInfo(message, actionString, onclick)
+    open fun showLoading(message: String) {
+        activityViewModel.showLoading(message)
     }
 
-    override fun showInfo(
+    open fun showInfo(message: String, actionString: String, onclick: () -> Unit) {
+        activityViewModel.showInfo(message, actionString, onclick)
+    }
+
+    open fun showInfo(
         title: String?,
-        message: String,
+        message: String?,
         positiveButton: String?,
         positiveAction: (() -> Unit)?,
         negativeButton: String?,
         negativeAction: (() -> Unit)?,
         triggerActionOnDismiss: Boolean,
-        canDismiss:Boolean
-    ) :AlertDialog?{
-        return callBack?.showInfo(title, message, positiveButton, positiveAction, negativeButton, negativeAction,triggerActionOnDismiss,canDismiss)
-    }
-
-    override fun showInfo(
-        @StringRes title: Int?, @StringRes message: Int, @StringRes positiveButton: Int?, positiveAction: (() -> Unit)?,
-        @StringRes negativeButton: Int?,
-        negativeAction: (() -> Unit)?,
-        triggerActionOnDismiss: Boolean,
-        canDismiss:Boolean
-    ) :AlertDialog?{
-        return callBack?.showInfo(
+        canDismiss: Boolean
+    ) {
+        activityViewModel.showInfo(
             title,
             message,
             positiveButton,
@@ -147,11 +142,34 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         )
     }
 
-    override fun onNavigate(navigationActionId: Int, bundle: Bundle?) {
-        if(isPaused)
-        {
-            pendingNavigationActionId=navigationActionId
-            pendingNavigationActionBundle=bundle
+    open fun showInfo(
+        context: Context,
+        @StringRes title: Int?,
+        @StringRes message: Int,
+        @StringRes positiveButton: Int?,
+        positiveAction: (() -> Unit)?,
+        @StringRes negativeButton: Int?,
+        negativeAction: (() -> Unit)?,
+        triggerActionOnDismiss: Boolean,
+        canDismiss: Boolean
+    ) {
+        activityViewModel.showInfo(
+            context,
+            title,
+            message,
+            positiveButton,
+            positiveAction,
+            negativeButton,
+            negativeAction,
+            triggerActionOnDismiss,
+            canDismiss
+        )
+    }
+
+    fun onNavigate(navigationActionId: Int, bundle: Bundle?=null) {
+        if (isPaused) {
+            pendingNavigationActionId = navigationActionId
+            pendingNavigationActionBundle = bundle
             return
         }
         findNavController().navigate(navigationActionId, bundle)
@@ -159,7 +177,56 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        vieModel.actionCallBacks = this
+        viewModel.infoMessage.observe(viewLifecycleOwner, EventObserver {
+            showInfo(
+                it.getTitle(),
+                it.getMessage(),
+                it.getPositiveButton(),
+                it.positiveAction,
+                it.getNegativeButton(),
+                it.negativeAction,
+                it.triggerActionOnDismiss,
+                it.canDismiss
+            )
+        })
+        viewModel.loading.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                if (it.isLoading) {
+                    showLoading(it)
+                } else {
+                    hideLoading()
+                }
+            }
+        })
+
+        viewModel.action.observe(viewLifecycleOwner, EventObserver {
+            performTask(it.task, it.any)
+        })
+
+        viewModel.navDirections.observe(viewLifecycleOwner,EventObserver{
+            onNavigateAction(it)
+        })
+
+        viewModel.activityNavigation.observe(viewLifecycleOwner,EventObserver{
+            if(it.intent!=null)
+            {
+                onNavigateToActivity(it.intent!!,it.finishCurrent)
+            }
+            else{
+                onNavigateToActivity(it.activityClass!!,it.finishCurrent)
+            }
+        })
+
+        viewModel.upNavigation.observe(viewLifecycleOwner,EventObserver{
+            onNavigateUp()
+        })
+
+        viewModel.navigate.observe(viewLifecycleOwner,EventObserver{
+            onNavigate(it.id,it.bundle)
+        })
+        activityViewModel.actionPerformed.observe(viewLifecycleOwner,EventObserver{
+            viewModel.taskPerformed(it)
+        })
     }
 
     /**
@@ -174,32 +241,28 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     }
 
-    override fun onNavigateUp() {
-        if(isPaused)
-        {
-            pendingNavigateUp=true
+    fun onNavigateUp() {
+        if (isPaused) {
+            pendingNavigateUp = true
             return
         }
-        if(!findNavController().navigateUp())
-        {
+        if (!findNavController().navigateUp()) {
             activity?.onBackPressed()
         }
     }
 
-    override fun onNavigateAction(navigationActionId: NavDirections) {
-        if(isPaused)
-        {
-            pendingNavDirections=navigationActionId
+    fun onNavigateAction(navigationActionId: NavDirections) {
+        if (isPaused) {
+            pendingNavDirections = navigationActionId
             return
         }
         findNavController().navigate(navigationActionId)
     }
 
-    override fun onNavigateToActivity(intent: Intent, finishCurrent: Boolean) {
-        if(isPaused)
-        {
-            pendingNavigationIntent=intent
-            pendingNavigationFinishCurrent=finishCurrent
+    fun onNavigateToActivity(intent: Intent, finishCurrent: Boolean) {
+        if (isPaused) {
+            pendingNavigationIntent = intent
+            pendingNavigationFinishCurrent = finishCurrent
             return
         }
         activity?.startActivity(intent)
@@ -207,57 +270,49 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
             activity?.finish()
     }
 
-    override fun onNavigateToActivity(activityClass: Class<*>, finishCurrent: Boolean) {
-        if(isPaused)
-        {
-            pendingNavigationActivityClass=activityClass
-            pendingNavigationFinishCurrent=finishCurrent
+    fun onNavigateToActivity(activityClass: Class<*>, finishCurrent: Boolean) {
+        if (isPaused) {
+            pendingNavigationActivityClass = activityClass
+            pendingNavigationFinishCurrent = finishCurrent
             return
         }
-        val intent=Intent(activity,activityClass)
+        val intent = Intent(activity, activityClass)
         activity?.startActivity(intent)
-        if(finishCurrent)
+        if (finishCurrent)
             activity?.finish()
 
     }
 
-    override fun performTask(task: Intent, any: Any?) {
-        callBack?.performTask(task,any)
+    open fun performTask(task: Intent, any: Any?) {
+        activityViewModel.performTask(task, any)
     }
 
-    protected fun continuePendingNavigation()
-    {
-        if(pendingNavigationActionId!=0)
-        {
-            onNavigate(pendingNavigationActionId,pendingNavigationActionBundle)
-        }
-        else if(pendingNavDirections!=null)
-        {
+    open fun toggleFloatingButtonSrc(@DrawableRes iconRes:Int) {
+        activityViewModel.toggleFloatingButtonSrc(iconRes)
+    }
+
+    protected fun continuePendingNavigation() {
+        if (pendingNavigationActionId != 0) {
+            onNavigate(pendingNavigationActionId, pendingNavigationActionBundle)
+        } else if (pendingNavDirections != null) {
             onNavigateAction(pendingNavDirections!!)
-        }
-        else if(pendingNavigationIntent!=null)
-        {
-            onNavigateToActivity(pendingNavigationIntent!!,pendingNavigationFinishCurrent)
-        }
-        else if(pendingNavigationActivityClass!=null)
-        {
-            onNavigateToActivity(pendingNavigationActivityClass!!,pendingNavigationFinishCurrent)
-        }
-        else if(pendingNavigateUp)
-        {
+        } else if (pendingNavigationIntent != null) {
+            onNavigateToActivity(pendingNavigationIntent!!, pendingNavigationFinishCurrent)
+        } else if (pendingNavigationActivityClass != null) {
+            onNavigateToActivity(pendingNavigationActivityClass!!, pendingNavigationFinishCurrent)
+        } else if (pendingNavigateUp) {
             onNavigateUp()
         }
         resentPendingState()
     }
 
-    protected fun resentPendingState()
-    {
-        pendingNavigationActionId=0
-        pendingNavigationActionBundle=null
-        pendingNavigateUp=false
-        pendingNavigationIntent=null
-        pendingNavigationActivityClass=null
-        pendingNavigationFinishCurrent=false
-        pendingNavDirections=null
+    protected fun resentPendingState() {
+        pendingNavigationActionId = 0
+        pendingNavigationActionBundle = null
+        pendingNavigateUp = false
+        pendingNavigationIntent = null
+        pendingNavigationActivityClass = null
+        pendingNavigationFinishCurrent = false
+        pendingNavDirections = null
     }
 }
