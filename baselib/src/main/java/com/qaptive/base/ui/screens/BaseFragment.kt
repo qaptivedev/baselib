@@ -15,7 +15,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import com.qaptive.base.R
 import com.qaptive.base.models.LoadingMessage
+import com.qaptive.base.models.Message
 import com.qaptive.base.utils.EventObserver
 import com.qaptive.base.viewmodel.BaseActivityViewModel
 import com.qaptive.base.viewmodel.BaseViewModel
@@ -100,7 +102,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         activityViewModel.showInfo(message)
     }
 
-    open fun showLoading(context: Context, resId: Int) {
+    open fun showLoading(context: Context, resId: Int = R.string.loading) {
         activityViewModel.showLoading(context, resId)
     }
 
@@ -116,19 +118,19 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         activityViewModel.showLoading(message)
     }
 
-    open fun showInfo(message: String, actionString: String, onclick: () -> Unit) {
+    open fun showInfo(message: String, actionString: String = "Ok", onclick: () -> Unit) {
         activityViewModel.showInfo(message, actionString, onclick)
     }
 
     open fun showInfo(
-        title: String?,
-        message: String?,
-        positiveButton: String?,
-        positiveAction: (() -> Unit)?,
-        negativeButton: String?,
-        negativeAction: (() -> Unit)?,
-        triggerActionOnDismiss: Boolean,
-        canDismiss: Boolean
+        title: String?=null,
+        message: String?=null,
+        positiveButton: String?=null,
+        positiveAction: (() -> Unit)?=null,
+        negativeButton: String?=null,
+        negativeAction: (() -> Unit)?=null,
+        triggerActionOnDismiss: Boolean=false,
+        canDismiss: Boolean=true
     ) {
         activityViewModel.showInfo(
             title,
@@ -144,14 +146,14 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     open fun showInfo(
         context: Context,
-        @StringRes title: Int?,
+        @StringRes title: Int?=null,
         @StringRes message: Int,
-        @StringRes positiveButton: Int?,
-        positiveAction: (() -> Unit)?,
-        @StringRes negativeButton: Int?,
-        negativeAction: (() -> Unit)?,
-        triggerActionOnDismiss: Boolean,
-        canDismiss: Boolean
+        @StringRes positiveButton: Int?=null,
+        positiveAction: (() -> Unit)?=null,
+        @StringRes negativeButton: Int?=null,
+        negativeAction: (() -> Unit)?=null,
+        triggerActionOnDismiss: Boolean=false,
+        canDismiss: Boolean=true
     ) {
         activityViewModel.showInfo(
             context,
@@ -164,6 +166,10 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
             triggerActionOnDismiss,
             canDismiss
         )
+    }
+
+    open fun showInfo(messageData: Message){
+        activityViewModel.showInfo(messageData)
     }
 
     fun onNavigate(navigationActionId: Int, bundle: Bundle?=null) {
