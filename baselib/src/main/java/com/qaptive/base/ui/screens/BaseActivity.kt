@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -28,6 +31,16 @@ abstract class BaseActivity : AppCompatActivity() {
     var isFloatingButtonEnabled = true
     var floatingAction: (() -> Unit)? = null
 
+    var isPaused = false
+
+    var pendingNavigationActionId = 0
+    var pendingNavigationActionBundle: Bundle? = null
+    var pendingNavigateUp = false
+    var pendingNavigationIntent: Intent? = null
+    var pendingNavigationActivityClass: Class<*>? = null
+    var pendingNavigationFinishCurrent = false
+    var pendingNavDirections: NavDirections? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.isFullScreen.observe(this, Observer { toggleFullScreen(it == true) })
@@ -38,8 +51,8 @@ abstract class BaseActivity : AppCompatActivity() {
             it?.let { toggleFloatingButtonSrc(it) }
         })
         viewModel.infoMessage.observe(this, EventObserver {
-            if(it.context==null){
-                it.context  =this
+            if (it.context == null) {
+                it.context = this
             }
             showDialog(
                 it.getTitle(),
@@ -53,25 +66,44 @@ abstract class BaseActivity : AppCompatActivity() {
                 it.canDismiss
             )
         })
-        viewModel.loading.observe(this, Observer {
-            it?.let {
-                if (it.isLoading) {
-                    if(it.context==null){
-                        it.context=this
-                    }
-                    showLoading(
-                        it.getTitle(),
-                        it.getMessage(),
-                        it.canDismiss
-                    )
-                } else {
-                    hideLoading()
+
+        viewModel.loading.observe(this, EventObserver {
+            if (it.isLoading) {
+                if (it.context == null) {
+                    it.context = this
                 }
+                showLoading(
+                    it.getTitle(),
+                    it.getMessage(),
+                    it.canDismiss
+                )
+            } else {
+                hideLoading()
             }
         })
 
         viewModel.action.observe(this, EventObserver {
             performTask(it.task, it.any)
+        })
+
+        viewModel.navDirections.observe(this, EventObserver {
+            onNavigateAction(it)
+        })
+
+        viewModel.activityNavigation.observe(this, EventObserver {
+            if (it.intent != null) {
+                onNavigateToActivity(it.intent!!, it.finishCurrent)
+            } else {
+                onNavigateToActivity(it.activityClass!!, it.finishCurrent)
+            }
+        })
+
+        viewModel.upNavigation.observe(this, EventObserver {
+            onNavigateUp()
+        })
+
+        viewModel.navigate.observe(this, EventObserver {
+            onNavigate(it.id, it.bundle)
         })
     }
 
@@ -87,6 +119,18 @@ abstract class BaseActivity : AppCompatActivity() {
                 isInFulScreen = false
             }
         }
+    }
+
+    override fun onPause() {
+        isPaused = true
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isPaused = false
+        super.onResume()
+        continuePendingNavigation()
     }
 
     private fun toggleDrawerEnabled(enableDrawer: Boolean) {
@@ -184,6 +228,71 @@ abstract class BaseActivity : AppCompatActivity() {
         return dialog
     }
 
+    open fun onNavigateAction(navigationActionId: NavDirections) {
+        if (isPaused) {
+            pendingNavDirections = navigationActionId
+            return
+        }
+        getNavController().navigate(navigationActionId)
+    }
+
+    open fun onNavigateToActivity(intent: Intent, finishCurrent: Boolean) {
+        if (isPaused) {
+            pendingNavigationIntent = intent
+            pendingNavigationFinishCurrent = finishCurrent
+            return
+        }
+        startActivity(intent)
+        if (finishCurrent)
+            finish()
+    }
+
+    open fun onNavigateToActivity(activityClass: Class<*>, finishCurrent: Boolean) {
+        if (isPaused) {
+            pendingNavigationActivityClass = activityClass
+            pendingNavigationFinishCurrent = finishCurrent
+            return
+        }
+        val intent = Intent(this, activityClass)
+        startActivity(intent)
+        if (finishCurrent)
+            finish()
+    }
+
+    fun onNavigate(navigationActionId: Int, bundle: Bundle? = null) {
+        if (isPaused) {
+            pendingNavigationActionId = navigationActionId
+            pendingNavigationActionBundle = bundle
+            return
+        }
+        getNavController().navigate(navigationActionId, bundle)
+    }
+
+    protected fun continuePendingNavigation() {
+        if (pendingNavigationActionId != 0) {
+            onNavigate(pendingNavigationActionId, pendingNavigationActionBundle)
+        } else if (pendingNavDirections != null) {
+            onNavigateAction(pendingNavDirections!!)
+        } else if (pendingNavigationIntent != null) {
+            onNavigateToActivity(pendingNavigationIntent!!, pendingNavigationFinishCurrent)
+        } else if (pendingNavigationActivityClass != null) {
+            onNavigateToActivity(pendingNavigationActivityClass!!, pendingNavigationFinishCurrent)
+        } else if (pendingNavigateUp) {
+            onNavigateUp()
+        }
+        resentPendingState()
+    }
+
+    protected fun resentPendingState() {
+        pendingNavigationActionId = 0
+        pendingNavigationActionBundle = null
+        pendingNavigateUp = false
+        pendingNavigationIntent = null
+        pendingNavigationActivityClass = null
+        pendingNavigationFinishCurrent = false
+        pendingNavDirections = null
+    }
+
     abstract fun getNavigationView(): NavigationView?
     abstract fun getDrawerLayout(): DrawerLayout?
     abstract fun getActionBarDrawerToggle(): ActionBarDrawerToggle?
@@ -192,4 +301,5 @@ abstract class BaseActivity : AppCompatActivity() {
     abstract fun showLoading(title: String? = null, message: String?, dialogDismiss: Boolean = true)
     abstract fun hideLoading()
     abstract fun performTask(task: Intent, any: Any?)
+    abstract fun getNavController(): NavController
 }

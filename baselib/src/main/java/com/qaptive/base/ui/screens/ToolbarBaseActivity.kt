@@ -8,7 +8,6 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 
 abstract class ToolbarBaseActivity:BaseActivity(),ToolbarProvider {
     abstract fun getAppBarConfiguration(): AppBarConfiguration
-    abstract fun getNavController(): NavController
 
     override fun setUpToolbar(
         toolbar: Toolbar?,

@@ -199,13 +199,12 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         viewModel.infoMessage.observe(viewLifecycleOwner, EventObserver {
             showInfo(it)
         })
-        viewModel.loading.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                if (it.isLoading) {
-                    showLoading(it)
-                } else {
-                    hideLoading()
-                }
+
+        viewModel.loading.observe(viewLifecycleOwner, EventObserver {
+            if (it.isLoading) {
+                showLoading(it)
+            } else {
+                hideLoading()
             }
         })
 

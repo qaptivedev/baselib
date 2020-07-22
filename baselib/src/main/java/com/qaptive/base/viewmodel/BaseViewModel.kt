@@ -23,8 +23,8 @@ abstract class BaseViewModel:ViewModel() {
     private val actionLiveData = MutableLiveData<Event<Action>>()
     val action:LiveData<Event<Action>> = actionLiveData
 
-    private val loadingLiveData = MutableLiveData<LoadingMessage>()
-    val loading:LiveData<LoadingMessage> = loadingLiveData
+    private val loadingLiveData = MutableLiveData<Event<LoadingMessage>>()
+    val loading:LiveData<Event<LoadingMessage>> = loadingLiveData
 
     private val navDirectionsLiveData =MutableLiveData<Event<NavDirections>>()
     val navDirections:LiveData<Event<NavDirections>> = navDirectionsLiveData
@@ -33,10 +33,10 @@ abstract class BaseViewModel:ViewModel() {
     val navigate:LiveData<Event<NavigationModel>> = navigateLiveData
 
     private val upNavigationLiveData = MutableLiveData<Event<Boolean>>()
-    internal val upNavigation:LiveData<Event<Boolean>> =upNavigationLiveData
+    val upNavigation:LiveData<Event<Boolean>> =upNavigationLiveData
 
     private val activityNavigationLiveData = MutableLiveData<Event<ActivityNavigationModel>>()
-    internal val activityNavigation:LiveData<Event<ActivityNavigationModel>> = activityNavigationLiveData
+    val activityNavigation:LiveData<Event<ActivityNavigationModel>> = activityNavigationLiveData
 
 
 
@@ -128,13 +128,13 @@ abstract class BaseViewModel:ViewModel() {
     }
 
     open fun showLoading(loadingMessage:LoadingMessage) {
-        loadingLiveData.postValue(loadingMessage)
+        loadingLiveData.postValue(Event(loadingMessage))
     }
 
     open fun hideLoading() {
         val loadingMessage= LoadingMessage()
         loadingMessage.isLoading=false
-        loadingLiveData.postValue(loadingMessage)
+        loadingLiveData.postValue(Event(loadingMessage))
     }
 
     fun onNavigateToActivity(intent: Intent, finishCurrent:Boolean=false)
