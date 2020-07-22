@@ -121,7 +121,7 @@ abstract class BaseViewModel:ViewModel() {
         showLoading(loadingMessage)
     }
 
-    fun showLoading(context: Context, @StringRes resId: Int = R.string.loading) {
+    fun showLoading(context: Context?=null, @StringRes resId: Int = R.string.loading) {
         val loadingMessage=LoadingMessage(context)
         loadingMessage.messageRes=resId
         showLoading(loadingMessage)

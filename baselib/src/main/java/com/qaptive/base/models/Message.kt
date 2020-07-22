@@ -6,7 +6,7 @@ import androidx.annotation.StringRes
 /**
  * @param context Context to use get values from resource
  */
-open class Message(val context: Context?=null) {
+open class Message(var context: Context?=null) {
 
     var titleStr: String? = null
     var messageStr: String? = null

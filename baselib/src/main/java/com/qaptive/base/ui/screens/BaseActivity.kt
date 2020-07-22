@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.qaptive.base.R
@@ -37,6 +38,9 @@ abstract class BaseActivity : AppCompatActivity() {
             it?.let { toggleFloatingButtonSrc(it) }
         })
         viewModel.infoMessage.observe(this, EventObserver {
+            if(it.context==null){
+                it.context  =this
+            }
             showDialog(
                 it.getTitle(),
                 it.getMessage(),
@@ -52,6 +56,9 @@ abstract class BaseActivity : AppCompatActivity() {
         viewModel.loading.observe(this, Observer {
             it?.let {
                 if (it.isLoading) {
+                    if(it.context==null){
+                        it.context=this
+                    }
                     showLoading(
                         it.getTitle(),
                         it.getMessage(),
@@ -98,7 +105,6 @@ abstract class BaseActivity : AppCompatActivity() {
             }
         } else {
             if (isDrawerEnabled) {
-
                 isDrawerEnabled = false
                 getDrawerLayout()?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                 getActionBarDrawerToggle()?.isDrawerIndicatorEnabled = false
@@ -137,8 +143,7 @@ abstract class BaseActivity : AppCompatActivity() {
         dialogDismiss: Boolean = true
     ): AlertDialog {
         var isClicked = false
-        val dialogBuilder =
-            AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
         dialogBuilder.setTitle(title ?: getString(R.string.default_dialogue_title))
         dialogBuilder.setMessage(message)
         positiveButton?.let {
