@@ -49,10 +49,10 @@ abstract class BaseViewModel:ViewModel() {
     }
 
     fun showInfo(
-        context: Context,
         message: String,
         @StringRes actionString: Int = R.string.ok,
-        onclick: () -> Unit
+        onclick: () -> Unit,
+        context: Context?=null
     ) {
         val messageData = Message(context)
         messageData.messageStr = message
@@ -61,7 +61,7 @@ abstract class BaseViewModel:ViewModel() {
         showInfo(messageData)
     }
 
-    fun showInfo(context: Context, @StringRes message: Int) {
+    fun showInfo(@StringRes message: Int,context: Context?=null) {
         showInfo(context = context, title = null, message = message)
     }
 
@@ -89,7 +89,6 @@ abstract class BaseViewModel:ViewModel() {
     }
 
     fun showInfo(
-        context: Context,
         @StringRes title: Int? = null,
         @StringRes message: Int,
         @StringRes positiveButton: Int? = null,
@@ -97,7 +96,8 @@ abstract class BaseViewModel:ViewModel() {
         @StringRes negativeButton: Int? = null,
         negativeAction: (() -> Unit)? = null,
         triggerActionOnDismiss: Boolean = false,
-        canDismiss: Boolean = true
+        canDismiss: Boolean = true,
+        context: Context? =null
     ) {
         val messageData = Message(context)
         messageData.titleRes = title
@@ -121,7 +121,7 @@ abstract class BaseViewModel:ViewModel() {
         showLoading(loadingMessage)
     }
 
-    fun showLoading(context: Context?=null, @StringRes resId: Int = R.string.loading) {
+    fun showLoading(@StringRes resId: Int = R.string.loading,context: Context?=null) {
         val loadingMessage=LoadingMessage(context)
         loadingMessage.messageRes=resId
         showLoading(loadingMessage)

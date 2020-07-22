@@ -91,11 +91,11 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     }
 
     open fun showInfo(context: Context, message: String, actionString: Int, onclick: () -> Unit) {
-        activityViewModel.showInfo(context, message, actionString, onclick)
+        activityViewModel.showInfo(context= context, message = message, actionString = actionString, onclick = onclick)
     }
 
     open fun showInfo(context: Context, message: Int) {
-        activityViewModel.showInfo(context, message)
+        activityViewModel.showInfo(context = context,message =  message)
     }
 
     open fun showInfo(message: String) {
@@ -103,7 +103,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     }
 
     open fun showLoading(context: Context, resId: Int = R.string.loading) {
-        activityViewModel.showLoading(context, resId)
+        activityViewModel.showLoading(context = context,resId =  resId)
     }
 
     open fun showLoading(loadingMessage: LoadingMessage) {
@@ -156,15 +156,15 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         canDismiss: Boolean=true
     ) {
         activityViewModel.showInfo(
-            context,
-            title,
-            message,
-            positiveButton,
-            positiveAction,
-            negativeButton,
-            negativeAction,
-            triggerActionOnDismiss,
-            canDismiss
+            context = context,
+            title = title,
+            message = message,
+            positiveButton = positiveButton,
+            positiveAction = positiveAction,
+            negativeButton = negativeButton,
+            negativeAction = negativeAction,
+            triggerActionOnDismiss = triggerActionOnDismiss,
+            canDismiss = canDismiss
         )
     }
 
