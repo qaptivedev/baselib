@@ -62,12 +62,6 @@ abstract class BaseActivity : AppCompatActivity() {
                     showLoading(
                         it.getTitle(),
                         it.getMessage(),
-                        it.getPositiveButton(),
-                        it.positiveAction,
-                        it.getNegativeButton(),
-                        it.negativeAction,
-                        it.getNeutralButton(),
-                        it.triggerActionOnDismiss,
                         it.canDismiss
                     )
                 } else {
@@ -195,16 +189,7 @@ abstract class BaseActivity : AppCompatActivity() {
     abstract fun getActionBarDrawerToggle(): ActionBarDrawerToggle?
     abstract fun getFloatingActionButton(): FloatingActionButton?
     abstract fun toggleFloatingButtonSrc(iconRes: Int)
-    abstract fun showLoading(
-        title: String? = null, message: String?, positiveButton: String? = null,
-        positiveAction: (() -> Unit)?,
-        negativeButton: String? = null,
-        negativeAction: (() -> Unit)?,
-        neutralButton: String? = null,
-        triggerActionOnDismiss: Boolean = false,
-        dialogDismiss: Boolean = true
-    )
-
+    abstract fun showLoading(title: String? = null, message: String?, dialogDismiss: Boolean = true)
     abstract fun hideLoading()
     abstract fun performTask(task: Intent, any: Any?)
 }

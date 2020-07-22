@@ -22,7 +22,7 @@ import com.qaptive.base.utils.EventObserver
 import com.qaptive.base.viewmodel.BaseActivityViewModel
 import com.qaptive.base.viewmodel.BaseViewModel
 
-abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(){
+abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment() {
     lateinit var binder: T
 
     var isPaused = false
@@ -90,20 +90,37 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         continuePendingNavigation()
     }
 
-    open fun showInfo(context: Context, message: String, actionString: Int, onclick: () -> Unit) {
-        activityViewModel.showInfo(context= context, message = message, actionString = actionString, onclick = onclick)
+    fun showInfo(context: Context, message: String, actionString: Int, onclick: () -> Unit) {
+        val messageData = Message(context)
+        messageData.messageStr = message
+        messageData.positiveButtonRes = actionString
+        messageData.positiveAction = onclick
+        showInfo(messageData)
     }
 
-    open fun showInfo(context: Context, message: Int) {
-        activityViewModel.showInfo(context = context,message =  message)
+    fun showInfo(context: Context, message: Int) {
+        val messageData = Message(context)
+        messageData.messageRes = message
+        showInfo(messageData)
     }
 
-    open fun showInfo(message: String) {
-        activityViewModel.showInfo(message)
+    fun showInfo(message: String) {
+        val messageData = Message()
+        messageData.messageStr = message
+        showInfo(messageData)
     }
 
-    open fun showLoading(context: Context, resId: Int = R.string.loading) {
-        activityViewModel.showLoading(context = context,resId =  resId)
+    fun showLoading(context: Context, resId: Int = R.string.loading) {
+        val loadingMessage = LoadingMessage(context)
+        loadingMessage.messageRes = resId
+        showLoading(loadingMessage)
+
+    }
+
+    fun showLoading(message: String) {
+        val loadingMessage = LoadingMessage()
+        loadingMessage.messageStr = message
+        showLoading(loadingMessage)
     }
 
     open fun showLoading(loadingMessage: LoadingMessage) {
@@ -114,65 +131,61 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         activityViewModel.hideLoading()
     }
 
-    open fun showLoading(message: String) {
-        activityViewModel.showLoading(message)
+    fun showInfo(message: String, actionString: String = "Ok", onclick: () -> Unit) {
+        showInfo(message = message, positiveButton = actionString, positiveAction = onclick)
     }
 
-    open fun showInfo(message: String, actionString: String = "Ok", onclick: () -> Unit) {
-        activityViewModel.showInfo(message, actionString, onclick)
-    }
-
-    open fun showInfo(
-        title: String?=null,
-        message: String?=null,
-        positiveButton: String?=null,
-        positiveAction: (() -> Unit)?=null,
-        negativeButton: String?=null,
-        negativeAction: (() -> Unit)?=null,
-        triggerActionOnDismiss: Boolean=false,
-        canDismiss: Boolean=true
+    fun showInfo(
+        title: String? = null,
+        message: String? = null,
+        positiveButton: String? = null,
+        positiveAction: (() -> Unit)? = null,
+        negativeButton: String? = null,
+        negativeAction: (() -> Unit)? = null,
+        triggerActionOnDismiss: Boolean = false,
+        canDismiss: Boolean = true,
+        context: Context? = null
     ) {
-        activityViewModel.showInfo(
-            title,
-            message,
-            positiveButton,
-            positiveAction,
-            negativeButton,
-            negativeAction,
-            triggerActionOnDismiss,
-            canDismiss
-        )
+        val messageData = Message(context)
+        messageData.titleStr = title
+        messageData.messageStr = message
+        messageData.positiveButtonStr = positiveButton
+        messageData.positiveAction = positiveAction
+        messageData.negativeButtonStr = negativeButton
+        messageData.negativeAction = negativeAction
+        messageData.triggerActionOnDismiss = triggerActionOnDismiss
+        messageData.canDismiss = canDismiss
+        showInfo(messageData)
     }
 
-    open fun showInfo(
+    fun showInfo(
         context: Context,
-        @StringRes title: Int?=null,
+        @StringRes title: Int? = null,
         @StringRes message: Int,
-        @StringRes positiveButton: Int?=null,
-        positiveAction: (() -> Unit)?=null,
-        @StringRes negativeButton: Int?=null,
-        negativeAction: (() -> Unit)?=null,
-        triggerActionOnDismiss: Boolean=false,
-        canDismiss: Boolean=true
+        @StringRes positiveButton: Int? = null,
+        positiveAction: (() -> Unit)? = null,
+        @StringRes negativeButton: Int? = null,
+        negativeAction: (() -> Unit)? = null,
+        triggerActionOnDismiss: Boolean = false,
+        canDismiss: Boolean = true
     ) {
-        activityViewModel.showInfo(
-            context = context,
-            title = title,
-            message = message,
-            positiveButton = positiveButton,
-            positiveAction = positiveAction,
-            negativeButton = negativeButton,
-            negativeAction = negativeAction,
-            triggerActionOnDismiss = triggerActionOnDismiss,
-            canDismiss = canDismiss
-        )
+        val messageData = Message(context)
+        messageData.titleRes = title
+        messageData.messageRes = message
+        messageData.positiveButtonRes = positiveButton
+        messageData.positiveAction = positiveAction
+        messageData.negativeButtonRes = negativeButton
+        messageData.negativeAction = negativeAction
+        messageData.triggerActionOnDismiss = triggerActionOnDismiss
+        messageData.canDismiss = canDismiss
+        showInfo(messageData)
     }
 
-    open fun showInfo(messageData: Message){
+    open fun showInfo(messageData: Message) {
         activityViewModel.showInfo(messageData)
     }
 
-    fun onNavigate(navigationActionId: Int, bundle: Bundle?=null) {
+    fun onNavigate(navigationActionId: Int, bundle: Bundle? = null) {
         if (isPaused) {
             pendingNavigationActionId = navigationActionId
             pendingNavigationActionBundle = bundle
@@ -184,16 +197,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.infoMessage.observe(viewLifecycleOwner, EventObserver {
-            showInfo(
-                it.getTitle(),
-                it.getMessage(),
-                it.getPositiveButton(),
-                it.positiveAction,
-                it.getNegativeButton(),
-                it.negativeAction,
-                it.triggerActionOnDismiss,
-                it.canDismiss
-            )
+            showInfo(it)
         })
         viewModel.loading.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -209,28 +213,26 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
             performTask(it.task, it.any)
         })
 
-        viewModel.navDirections.observe(viewLifecycleOwner,EventObserver{
+        viewModel.navDirections.observe(viewLifecycleOwner, EventObserver {
             onNavigateAction(it)
         })
 
-        viewModel.activityNavigation.observe(viewLifecycleOwner,EventObserver{
-            if(it.intent!=null)
-            {
-                onNavigateToActivity(it.intent!!,it.finishCurrent)
-            }
-            else{
-                onNavigateToActivity(it.activityClass!!,it.finishCurrent)
+        viewModel.activityNavigation.observe(viewLifecycleOwner, EventObserver {
+            if (it.intent != null) {
+                onNavigateToActivity(it.intent!!, it.finishCurrent)
+            } else {
+                onNavigateToActivity(it.activityClass!!, it.finishCurrent)
             }
         })
 
-        viewModel.upNavigation.observe(viewLifecycleOwner,EventObserver{
+        viewModel.upNavigation.observe(viewLifecycleOwner, EventObserver {
             onNavigateUp()
         })
 
-        viewModel.navigate.observe(viewLifecycleOwner,EventObserver{
-            onNavigate(it.id,it.bundle)
+        viewModel.navigate.observe(viewLifecycleOwner, EventObserver {
+            onNavigate(it.id, it.bundle)
         })
-        activityViewModel.actionPerformed.observe(viewLifecycleOwner,EventObserver{
+        activityViewModel.actionPerformed.observe(viewLifecycleOwner, EventObserver {
             viewModel.taskPerformed(it)
         })
     }
@@ -243,6 +245,9 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         return false
     }
 
+    /***
+     * Called after binder created
+     */
     open fun onBinderCreated() {
 
     }
@@ -293,7 +298,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         activityViewModel.performTask(task, any)
     }
 
-    open fun toggleFloatingButtonSrc(@DrawableRes iconRes:Int) {
+    open fun toggleFloatingButtonSrc(@DrawableRes iconRes: Int) {
         activityViewModel.toggleFloatingButtonSrc(iconRes)
     }
 
