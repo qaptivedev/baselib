@@ -3,6 +3,7 @@ package com.qaptive.base.ui.screens
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -23,9 +24,7 @@ import com.qaptive.base.viewmodel.BaseActivityViewModel
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    val viewModel by lazy {
-        ViewModelProvider(this).get(BaseActivityViewModel::class.java)
-    }
+    val viewModel:BaseActivityViewModel by viewModels()
     var isInFulScreen = false
     var isDrawerEnabled = true
     var isFloatingButtonEnabled = true
