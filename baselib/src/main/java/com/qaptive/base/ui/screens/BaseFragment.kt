@@ -11,8 +11,7 @@ import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.qaptive.base.R
@@ -23,6 +22,7 @@ import com.qaptive.base.viewmodel.BaseActivityViewModel
 import com.qaptive.base.viewmodel.BaseViewModel
 
 abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment() {
+
     lateinit var binder: T
 
     var isPaused = false
@@ -35,27 +35,12 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     var pendingNavigationFinishCurrent = false
     var pendingNavDirections: NavDirections? = null
 
-
-    protected val viewModel: VM by lazy {
-        createViewModel()
-    }
-
-    protected val activityViewModel by lazy {
-        ViewModelProvider(requireActivity()).get(BaseActivityViewModel::class.java)
-    }
-
-    open fun createViewModel(): VM {
-        return if (isLifecycleOwnerActivity()) {
-            ViewModelProvider(requireActivity()).get(getViewModelClass())
-        } else {
-            ViewModelProvider(this).get(getViewModelClass())
-        }
-    }
+    protected abstract val viewModel: VM
+    protected val activityViewModel:BaseActivityViewModel by activityViewModels()
 
     abstract fun isFullScreen(): Boolean
     abstract fun navigationDrawerEnabled(): Boolean
     abstract fun floatingActionButtonRequired(): Boolean
-    abstract fun getViewModelClass(): Class<VM>
 
     open fun floatingActionButton(): (() -> Unit)? {
         return null
@@ -234,14 +219,6 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         activityViewModel.actionPerformed.observe(viewLifecycleOwner, EventObserver {
             viewModel.taskPerformed(it)
         })
-    }
-
-    /**
-     * check if lifecycle owner of ViewModel activity
-     * @return [Boolean] true if owner if activity , false by default
-     */
-    open fun isLifecycleOwnerActivity(): Boolean {
-        return false
     }
 
     /***
