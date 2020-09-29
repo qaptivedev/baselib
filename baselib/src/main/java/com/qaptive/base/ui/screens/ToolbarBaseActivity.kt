@@ -1,7 +1,6 @@
 package com.qaptive.base.ui.screens
 
 import androidx.appcompat.widget.Toolbar
-import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.appbar.CollapsingToolbarLayout
