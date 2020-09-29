@@ -1,12 +1,19 @@
 package com.qaptive.base.utils
 
-import com.qaptive.base.BuildConfig
 
 class Log {
     companion object {
+        
+        private var isDebug :Boolean = false
+
+        @JvmStatic
+        fun init(isDebug:Boolean){
+            this.isDebug = isDebug
+        }
+        
         @JvmStatic
         fun v(tag: String, msg: String): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.v(tag, msg)
             else
                 -1
@@ -14,7 +21,7 @@ class Log {
 
         @JvmStatic
         fun v(tag: String, msg: String?, tr: Throwable?): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.v(tag, msg, tr)
             else
                 -1
@@ -22,7 +29,7 @@ class Log {
 
         @JvmStatic
         fun d(tag: String, msg: String): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.d(tag, msg)
             else
                 -1
@@ -30,7 +37,7 @@ class Log {
 
         @JvmStatic
         fun d(tag: String, msg: String?, tr: Throwable?): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.d(tag, msg, tr)
             else
                 -1
@@ -38,7 +45,7 @@ class Log {
 
         @JvmStatic
         fun i(tag: String, msg: String): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.i(tag, msg)
             else
                 -1
@@ -51,7 +58,7 @@ class Log {
 
         @JvmStatic
         fun w(tag: String, msg: String): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.w(tag, msg)
             else
                 -1
@@ -59,7 +66,7 @@ class Log {
 
         @JvmStatic
         fun w(tag: String, msg: String?, tr: Throwable?): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.w(tag, msg, tr)
             else
                 -1
@@ -72,7 +79,7 @@ class Log {
 
         @JvmStatic
         fun e(tag: String, msg: String): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.e(tag, msg)
             else
                 -1
@@ -80,7 +87,7 @@ class Log {
 
         @JvmStatic
         fun e(tag: String, msg: String?, tr: Throwable?): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.e(tag, msg, tr)
             else
                 -1
@@ -88,7 +95,7 @@ class Log {
 
         @JvmStatic
         fun wtf(tag: String, msg: String?): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.wtf(tag, msg)
             else
                 -1
@@ -96,7 +103,7 @@ class Log {
 
         @JvmStatic
         fun wtf(tag: String, msg: String?, tr: Throwable?): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.wtf(tag, msg, tr)
             else
                 -1
@@ -104,15 +111,19 @@ class Log {
 
         @JvmStatic
         fun wtf(tag: String, tr: Throwable): Int {
-            return if (BuildConfig.DEBUG)
+            return if (isDebug)
                 android.util.Log.wtf(tag, tr)
             else
                 -1
         }
 
-        fun String.v(tag:String)
+        fun String.log(tag:String)
         {
             v(tag,this)
+        }
+
+        fun Throwable.log(tag:String){
+            wtf(tag,this)
         }
     }
 }

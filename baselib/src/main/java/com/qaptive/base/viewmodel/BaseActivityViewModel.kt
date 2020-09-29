@@ -20,8 +20,8 @@ class BaseActivityViewModel:BaseViewModel() {
     private val floatingButtonSrcLiveData = MutableLiveData<Int>()
     val floatingButtonSrc:LiveData<Int> = floatingButtonSrcLiveData
 
-    private val floatingActionLiveData = MutableLiveData<Task<Unit>>()
-    val floatingAction:LiveData<Task<Unit>> = floatingActionLiveData
+    private val floatingActionLiveData = MutableLiveData<Task<Unit>?>()
+    val floatingAction:LiveData<Task<Unit>?> = floatingActionLiveData
 
     private val actionPerformedLiveData = MutableLiveData<Event<Action>>()
     val actionPerformed:LiveData<Event<Action>> = actionPerformedLiveData

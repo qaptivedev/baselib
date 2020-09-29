@@ -179,8 +179,8 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
         findNavController().navigate(navigationActionId, bundle)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel.infoMessage.observe(viewLifecycleOwner, EventObserver {
             showInfo(it)
         })
@@ -279,16 +279,22 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel> : Fragment(
     }
 
     protected fun continuePendingNavigation() {
-        if (pendingNavigationActionId != 0) {
-            onNavigate(pendingNavigationActionId, pendingNavigationActionBundle)
-        } else if (pendingNavDirections != null) {
-            onNavigateAction(pendingNavDirections!!)
-        } else if (pendingNavigationIntent != null) {
-            onNavigateToActivity(pendingNavigationIntent!!, pendingNavigationFinishCurrent)
-        } else if (pendingNavigationActivityClass != null) {
-            onNavigateToActivity(pendingNavigationActivityClass!!, pendingNavigationFinishCurrent)
-        } else if (pendingNavigateUp) {
-            onNavigateUp()
+        when {
+            pendingNavigationActionId != 0 -> {
+                onNavigate(pendingNavigationActionId, pendingNavigationActionBundle)
+            }
+            pendingNavDirections != null -> {
+                onNavigateAction(pendingNavDirections!!)
+            }
+            pendingNavigationIntent != null -> {
+                onNavigateToActivity(pendingNavigationIntent!!, pendingNavigationFinishCurrent)
+            }
+            pendingNavigationActivityClass != null -> {
+                onNavigateToActivity(pendingNavigationActivityClass!!, pendingNavigationFinishCurrent)
+            }
+            pendingNavigateUp -> {
+                onNavigateUp()
+            }
         }
         resentPendingState()
     }
