@@ -5,7 +5,7 @@ import com.qaptive.base.BuildConfig
 class Log {
     companion object {
         @JvmStatic
-        fun v(tag: String, msg: String?): Int {
+        fun v(tag: String, msg: String): Int {
             return if (BuildConfig.DEBUG)
                 android.util.Log.v(tag, msg)
             else
@@ -21,7 +21,7 @@ class Log {
         }
 
         @JvmStatic
-        fun d(tag: String, msg: String?): Int {
+        fun d(tag: String, msg: String): Int {
             return if (BuildConfig.DEBUG)
                 android.util.Log.d(tag, msg)
             else
@@ -37,7 +37,7 @@ class Log {
         }
 
         @JvmStatic
-        fun i(tag: String, msg: String?): Int {
+        fun i(tag: String, msg: String): Int {
             return if (BuildConfig.DEBUG)
                 android.util.Log.i(tag, msg)
             else
@@ -50,7 +50,7 @@ class Log {
         }
 
         @JvmStatic
-        fun w(tag: String, msg: String?): Int {
+        fun w(tag: String, msg: String): Int {
             return if (BuildConfig.DEBUG)
                 android.util.Log.w(tag, msg)
             else
@@ -71,7 +71,7 @@ class Log {
         }
 
         @JvmStatic
-        fun e(tag: String, msg: String?): Int {
+        fun e(tag: String, msg: String): Int {
             return if (BuildConfig.DEBUG)
                 android.util.Log.e(tag, msg)
             else
@@ -103,7 +103,7 @@ class Log {
         }
 
         @JvmStatic
-        fun wtf(tag: String, tr: Throwable?): Int {
+        fun wtf(tag: String, tr: Throwable): Int {
             return if (BuildConfig.DEBUG)
                 android.util.Log.wtf(tag, tr)
             else
