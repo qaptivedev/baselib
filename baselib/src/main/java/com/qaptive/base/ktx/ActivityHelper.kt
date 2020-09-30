@@ -9,19 +9,22 @@ object ActivityHelper{
     /**
      * Enter activity to full screen
      */
-    fun AppCompatActivity.enterFullScreen()
+    fun AppCompatActivity.enterFullScreen(hideNavigation: Boolean=false)
     {
         window.insetsController?.systemBarsBehavior =
             WindowInsetsController.BEHAVIOR_SHOW_BARS_BY_SWIPE
         window.setDecorFitsSystemWindows(false)
         window.insetsController?.hide(WindowInsets.Type.statusBars())
         supportActionBar?.hide()
+        if(hideNavigation){
+            window.insetsController?.hide(WindowInsets.Type.navigationBars())
+        }
     }
 
     /**
      * Exit Full screen for the activity
      */
-    fun AppCompatActivity.exitFullScreen(hideNavigation: Boolean=false)
+    fun AppCompatActivity.exitFullScreen()
     {
         window.setDecorFitsSystemWindows(true)
         window.insetsController?.show(WindowInsets.Type.statusBars())
@@ -29,9 +32,7 @@ object ActivityHelper{
         supportActionBar?.show()
         window.insetsController?.systemBarsBehavior =
             WindowInsetsController.BEHAVIOR_SHOW_BARS_BY_TOUCH
-        if(hideNavigation){
-            window.insetsController?.hide(WindowInsets.Type.navigationBars())
-        }
+
     }
 
     @Deprecated("use exitFullScreen(hideNavigation: Boolean)",replaceWith = ReplaceWith("exitFullScreen(true)"),DeprecationLevel.ERROR)
