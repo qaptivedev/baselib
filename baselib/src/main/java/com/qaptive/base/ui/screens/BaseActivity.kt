@@ -107,7 +107,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private fun toggleFullScreen(enableFullScreen: Boolean) {
         if (enableFullScreen) {
             if (!isInFulScreen) {
-                enterFullScreen()
+                enterFullScreen(false)
                 isInFulScreen = true
             }
         } else {
